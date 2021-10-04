@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <link href="./style.css" rel="stylesheet" type="text/css">
+    <title>Emily Writes Poems Processing</title>
+</head>
+<body>
+    <h1>Emily Writes Poems Processing</h1>
+    <h2>Poem</h2>
+    <button id="process-poem">Process a poem file</button>
+    <h2>Details</h2>
+    <button id="process-details">Process a poem details file</button>
+    <h2>Collection</h2>
+    <h3>New collection</h3>
+    <form id="collection_form">
+        <label for="collection_id">Collection ID</label>
+        <input id="collection_id" type="text"/>
+        <label for="collection_name">Collection Name</label>
+        <input id="collection_name" type="text"/>
+        <input type="submit" value="Submit">
+    </form>
+    <h2>Features</h2>
+    <form id="feature_form">
+        <label for="poem_id">Poem ID</label>
+        <input id="poem_id" type="text"/>
+        <label for="poem_title">Poem Title</label>
+        <input id="poem_title" type="text"/>
+        <label for="feature_text">Feature Text</label>
+        <textarea id="feature_text" form="feature_form" cols=30 rows=3></textarea>
+        <input type="submit" value="Submit">
+    </form>
+    <script src="./renderer.js"></script>
+</body>
+</html>

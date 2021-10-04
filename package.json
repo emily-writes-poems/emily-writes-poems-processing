@@ -1,0 +1,16 @@
+{
+  "name": "former-interaction-hide-xawk7",
+  "productName": "former-interaction-hide-xawk7",
+  "description": "My Electron application description",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "emilylau",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "14.0.0"
+  }
+}
