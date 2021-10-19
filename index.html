@@ -1,38 +1,82 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <link href="./style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="index.css" >
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather" rel="stylesheet">
     <title>Emily Writes Poems Processing</title>
 </head>
+
 <body>
-    <h1>Emily Writes Poems Processing</h1>
-    <h2>Poem</h2>
-    <button id="process-poem">Process a poem file</button>
-    <h2>Details</h2>
-    <button id="process-details">Process a poem details file</button>
-    <h2>Collection</h2>
-    <h3>New collection</h3>
-    <form id="collection_form">
-        <label for="collection_id">Collection ID</label>
-        <input id="collection_id" type="text"/>
-        <label for="collection_name">Collection Name</label>
-        <input id="collection_name" type="text"/>
-        <input type="submit" value="Submit">
-    </form>
-    <h2>Features</h2>
-    <form id="feature_form">
-        <label for="poem_id">Poem ID</label>
-        <input id="poem_id" type="text"/>
-        <label for="poem_title">Poem Title</label>
-        <input id="poem_title" type="text"/>
-        <label for="feature_text">Feature Text</label>
-        <textarea id="feature_text" form="feature_form" cols=30 rows=3></textarea>
-        <input type="submit" value="Submit">
-    </form>
+    <div class="container py-3">
+        <h1 class="my-4">Emily Writes Poems Processing</h1>
+        <div class="my-4">
+            <h4>Poem</h4>
+            <button id="process-poem" class="btn btn-outline-primary">Process a poem file</button>
+            <button id="delete-poem" class="btn btn-outline-primary">Remove a poem</button>
+        </div>
+
+        <div class="my-4">
+            <h4>Details</h4>
+            <button id="process-details" class="btn btn-outline-primary">Process a poem details file</button>
+        </div>
+
+        <div class="my-4">
+            <h4>Collection</h4>
+            <h5>New collection</h5>
+            <form id="collection_form">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating form-field">
+                            <input id="collection_id" type="text" class="form-control" placeholder="Collection ID"/>
+                            <label for="collection_id">Collection ID</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating form-field">
+                            <input id="collection_name" type="text" class="form-control" placeholder="Collection Name"/>
+                            <label for="collection_name">Collection Name</label>
+                        </div>
+                    </div>
+                </div>
+                <button id="create-collection" type="submit" class="btn btn-outline-primary">Submit</button>
+            </form>
+        </div>
+
+        <div class="my-4">
+            <h4>Feature</h4>
+            <h5>New feature</h5>
+            <form id="feature_form">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating form-field">
+                            <input id="poem_id" type="text" class="form-control" placeholder="Poem ID"/>
+                            <label for="poem_id">Poem ID</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating form-field">
+                            <input id="poem_title" type="text" class="form-control" placeholder="Poem Title"/>
+                            <label for="poem_title">Poem Title</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-floating form-field">
+                    <textarea id="feature_text" style="height: 100px" class="form-control" placeholder="Feature Text"></textarea>
+                    <label for="feature_text">Feature Text</label>
+                </div>
+                <div class="form-field form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="current_feature">
+                    <label class="form-check-label" for="current_feature">Set as current feature</label>
+                </div>
+                <button id="" type="submit" class="btn btn-outline-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
     <script src="./renderer.js"></script>
 </body>
+
 </html>

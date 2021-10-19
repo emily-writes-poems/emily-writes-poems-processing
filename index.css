@@ -1,0 +1,41 @@
+/*
+#5B58BB
+#8A88D2
+#817E92
+*/
+.btn {
+    margin: 0.25em 0.5em 0.25em 0;
+}
+.btn-outline-primary {
+    color: #5B58BB;
+    border-color: #5B58BB;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:active,
+.btn-outline-primary:visited,
+.btn-outline-primary:focus,
+.form-check-input:checked {
+    background-color: #5B58BB;
+    border-color: #5B58BB;
+    color: white;
+}
+body {
+    font-family: Merriweather;
+}
+h1 {
+    color: #5B58BB;
+}
+h4 {
+    color: #5B58BB;
+    margin: 0.75em 0;
+}
+h5 {
+    color: #8A88D2;
+}
+textarea {
+    resize: none;
+}
+.form-field {
+    color: #817E92;
+    margin-bottom: 0.5em;
+}
