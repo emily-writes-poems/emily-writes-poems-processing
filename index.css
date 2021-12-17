@@ -31,6 +31,7 @@ h4 {
 }
 h5 {
     color: #8A88D2;
+    margin: 1em 0;
 }
 textarea {
     resize: none;

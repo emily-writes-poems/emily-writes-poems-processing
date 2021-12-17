@@ -1,6 +1,6 @@
 {
-  "name": "emily-writes-poems-processing-app",
-  "productName": "emily-writes-poems-processing-app",
+  "name": "ewp-processing",
+  "productName": "ewp-processing",
   "description": "My Electron application description",
   "keywords": [],
   "main": "./main.js",
@@ -9,12 +9,10 @@
   "scripts": {
     "start": "electron ."
   },
-  "dependencies": {
-    "@popperjs/core": "^2.10.2",
-    "bootstrap": "^5.1.3",
-    "jquery": "^3.6.0"
-  },
   "devDependencies": {
     "electron": "14.0.0"
+  },
+  "dependencies": {
+    "bootstrap": "^5.1.3"
   }
 }

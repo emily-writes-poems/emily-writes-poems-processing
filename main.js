@@ -11,19 +11,50 @@ function createWindow () {
             nodeIntegration: true,
             contextIsolation: false,
             enableRemoteModule: true,
+            nativeWindowOpen: true
         },
     })
 
     win.loadFile('index.html')
 }
 
+
+ipcMain.on('create-new-details', (event, args) => {
+    var fs = require('fs');
+    let file_name = config.details_folder + args[0] + '_ANNOTATED.txt'
+
+    var details_file = fs.createWriteStream(file_name)
+    details_file.on('open', () => {
+        details_file.write(args[1]);
+        details_file.write("\n\nTitle\n");
+        details_file.write(args[2]);
+        details_file.write("\n\nBehind the poem\n");
+        details_file.write(args[3]);
+        details_file.write("\n\nPoem lines\n");
+        details_file.write(args[4]);
+
+        details_file.end();
+    });
+
+    event.returnValue = file_name;
+})
+
+
 ipcMain.on('open-file-dialog', (event, [path, command, args]) => {
     dialog.showOpenDialog({
         defaultPath: path,
         properties: ['openFile']
     }).then(selected_file => {
-        ret = runShellCommand(createCommand(command, [selected_file.filePaths, args]));
-        event.returnValue = ret;
+        if (!selected_file.canceled) {
+            ret = runShellCommand(createCommand(command, [selected_file.filePaths, args]));
+            if (ret==0) {
+                event.returnValue = selected_file.filePaths;
+            } else { // Some error occured when running command
+                event.returnValue = -1;
+            }
+        } else { // Open file menu was canceled - No file was selected.
+            event.returnValue = 1;
+        }
     });
 })
 
@@ -36,10 +67,12 @@ function createCommand(command, args) {
     return commandWithArgs;
 }
 
+
 function runShellCommand(command) {
     try {
         let ret = execSync(command, { 'shell' : '/bin/zsh' })
-        return ret.toString();
+        console.log(ret.toString());
+        return 0;
     } catch(err) {
         console.log(err.stderr.toString());
         return -1;
@@ -63,7 +96,7 @@ ipcMain.on('delete-poem-confirmation', (event, args) => {
     }
 
     dialog.showMessageBox(options).then((response) => {
-        if(response.response == 0) {
+        if (response.response == 0) {
             featoption = response.checkboxChecked ? "delete" : "keep";
             ret = runShellCommand(createCommand(config.remove_poem_script, [args[4], "delete", featoption]))
             console.log(ret);
@@ -72,6 +105,7 @@ ipcMain.on('delete-poem-confirmation', (event, args) => {
         return
     })
 })
+
 
 app.whenReady().then(() => {
     createWindow()
