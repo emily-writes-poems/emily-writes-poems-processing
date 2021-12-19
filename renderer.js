@@ -63,3 +63,28 @@ document.getElementById('delete-poem').onclick = () => {
         console.log('no poem was chosen to delete')
     }
 }
+
+
+document.getElementById('select-collection_form').addEventListener('show.bs.collapse', () => {
+    console.log('wowie');
+    showCollections();
+});
+
+
+function showCollections() {
+    console.log('gathering all poem collections');
+    ret = ipcRenderer.sendSync('gather-collections');
+
+    console.log('creating poem collections dropdown menu');
+    var dropdown = document.getElementById('select-collection-dropdown');
+    while (dropdown.firstChild) {
+      dropdown.removeChild(dropdown.firstChild);
+    }
+    for(var i = 0; i < ret.length; i++) {
+        var opt = document.createElement("option")
+        opt.textContent = ret[i]["collection_name"]
+        opt.value = ret[i]["collection_id"]
+
+        dropdown.add(opt);
+    }
+}

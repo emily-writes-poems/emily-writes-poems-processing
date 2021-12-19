@@ -1,8 +1,20 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const dialog = require('electron').dialog
-const { execSync, spawnSync } = require('child_process')
+const { execSync } = require('child_process')
+const { MongoClient } = require('mongodb');
+
 var config = require('./config')
 
+var mongo_database = null
+
+// Connect to Mongo database
+MongoClient.connect(config.mongo_conn, function(err, client) {
+   if(err) throw err;
+   mongo_database = client.db(config.mongo_db);
+});
+
+
+// Load the app window
 function createWindow () {
     const win = new BrowserWindow({
         width: 1000,
@@ -19,6 +31,17 @@ function createWindow () {
 }
 
 
+// Gather list of poem collections
+ipcMain.on('gather-collections', (event, args) => {
+    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: {"collection_id" : 1, "collection_name" : 1, _id : 0} }).toArray(function(err, result) {
+        if(err) throw err;
+        console.log(result);
+        event.returnValue = result;
+    });
+});
+
+
+// Create new poem details file from form fields
 ipcMain.on('create-new-details', (event, args) => {
     var fs = require('fs');
     let file_name = config.details_folder + args[0] + '_ANNOTATED.txt'
@@ -40,6 +63,8 @@ ipcMain.on('create-new-details', (event, args) => {
 })
 
 
+// Show open file dialog:
+// If a file was chosen, run the specified command via shell script
 ipcMain.on('open-file-dialog', (event, [path, command, args]) => {
     dialog.showOpenDialog({
         defaultPath: path,
@@ -59,6 +84,7 @@ ipcMain.on('open-file-dialog', (event, [path, command, args]) => {
 })
 
 
+// Create a command given arguments
 function createCommand(command, args) {
     let commandWithArgs = command
     for (const arg of args) {
@@ -68,6 +94,7 @@ function createCommand(command, args) {
 }
 
 
+// Run a command via shell script
 function runShellCommand(command) {
     try {
         let ret = execSync(command, { 'shell' : '/bin/zsh' })
@@ -80,6 +107,7 @@ function runShellCommand(command) {
 }
 
 
+// Awful code related to deleting a poem - TODO: completely rewriting this process
 ipcMain.on('delete-poem-confirmation', (event, args) => {
     let details = [];
     details.push('POEMS: ' + args[0])
@@ -107,6 +135,7 @@ ipcMain.on('delete-poem-confirmation', (event, args) => {
 })
 
 
+// Start up the app
 app.whenReady().then(() => {
     createWindow()
 
