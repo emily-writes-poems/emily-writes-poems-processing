@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron')
 const dialog = require('electron').dialog
 const { execSync } = require('child_process')
 const { MongoClient } = require('mongodb');
@@ -8,7 +8,7 @@ var config = require('./config')
 var mongo_database = null
 
 // Connect to Mongo database
-MongoClient.connect(config.mongo_conn, function(err, client) {
+MongoClient.connect(config.mongo_conn, (err, client) => {
    if(err) throw err;
    mongo_database = client.db(config.mongo_db);
 });
@@ -33,9 +33,9 @@ function createWindow () {
 
 // Gather list of poem collections
 ipcMain.on('gather-collections', (event, args) => {
-    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: {"collection_id" : 1, "collection_name" : 1, _id : 0} }).toArray(function(err, result) {
+    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: {"collection_id" : 1, "collection_name" : 1, _id : 0} }).toArray((err, result) => {
         if(err) throw err;
-        console.log(result);
+        // console.log(result);
         event.returnValue = result;
     });
 });
@@ -135,11 +135,43 @@ ipcMain.on('delete-poem-confirmation', (event, args) => {
 })
 
 
+// Create new feature from form fields
+ipcMain.on('create-new-feature', (event, args) => {
+    let poem_title = null;
+    // Search the DB for the poem title corresponding to poem id - if poem doesn't exist, return without creating feature
+    mongo_database.collection(config.mongo_poems_coll).findOne( {"poem_id" : args[0]}, (err, result) => {
+        if(result) {  // Set poem title
+            poem_title = result["poem_title"];
+            if (args[2] == true) { // Want to set this new feature as the current feature, so unset any existing current feature
+                mongo_database.collection(config.mongo_feat_coll).updateOne( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, result) => {
+                    if(err) throw err;
+                    console.log("Successfully unset current feature.");
+                } );
+            }
+            // Insert into DB
+            mongo_database.collection(config.mongo_feat_coll).insertOne( { "poem_id" : args[0], "poem_title" : poem_title, "featured_text" : args[1], "currently_featured" : args[2] }, (err, result) => {
+                if(err) throw err;
+                console.log("Inserted new feature: " + args)
+            } );
+        } else {  // Poem not found, return
+            console.log('poem not found to create new feature');
+            event.returnValue = -1;
+        }
+    } );
+});
+
+
 // Start up the app
 app.whenReady().then(() => {
     createWindow()
 
-    app.on('activate', function () {
+    if (nativeTheme.shouldUseDarkColors) {
+        app.dock.setIcon('./images/ewp-logo-alt.png');
+    } else {
+        app.dock.setIcon('./images/ewp-logo.png');
+    }
+
+    app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow()
         }

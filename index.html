@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="index.css" >
     <link href="https://fonts.googleapis.com/css2?family=Merriweather" rel="stylesheet">
     <title>Emily Writes Poems Processing</title>
@@ -12,15 +13,15 @@
 <body>
     <div class="container py-3">
         <h1 class="my-4">Emily Writes Poems Processing</h1>
-        <div class="my-4">
+        <div class="my-4"> <!-- Poem -->
             <h4>Poem</h4>
-            <button id="process-poem" class="btn btn-outline-primary">Process a poem file</button>
-            <button id="delete-poem" class="btn btn-outline-primary">Remove a poem</button>
+            <button id="process-poem" class="btn btn-outline-primary">Process a poem file <span class="material-icons button-icons">file_open</span></button>
+            <button id="delete-poem" class="btn btn-outline-primary">Remove a poem <span class="material-icons button-icons">file_open</span></button>
         </div>
-        <div class="my-4">
+        <div class="my-4"> <!-- Details -->
             <h4>Details</h4>
-            <button id="process-details" class="btn btn-outline-primary">Process a poem details file</button>
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_details">Create a new poem details file</button>
+            <button id="process-details" class="btn btn-outline-primary">Process a poem details file <span class="material-icons button-icons">file_open</span></button>
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_details">Create a new poem details file <span class="material-icons button-icons">note_add</span></button>
             <div id="new_details" class="collapse">
                 <h5>New details file</h5>
                 <form id="details_form">
@@ -50,14 +51,14 @@
                         <textarea id="details_poem_lines" style="height: 250px" class="form-control" placeholder="Poem Lines"></textarea>
                         <label for="details_poem_lines">Poem Lines</label>
                     </div>
+                    <input type="reset" class="btn btn-outline-primary">
                     <button id="create-details" type="button" class="btn btn-outline-primary">Submit</button>
                 </form>
             </div>
         </div>
-
-        <div class="my-4">
+        <div class="my-4"> <!-- Collection -->
             <h4>Collection</h4>
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-collection_form">Display all collections</button>
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-collection_form">Display all collections <span class="material-icons button-icons">menu_open</span></button>
             <form id="select-collection_form" class="collapse">
                 <div class="row">
                     <div class="col">
@@ -65,7 +66,7 @@
                     </div>
                 </div>
             </form>
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection</button>
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection <span class="material-icons button-icons">add_circle</span></button>
             <div id="new_collection" class="collapse">
                 <h5>New collection</h5>
                 <form id="collection_form">
@@ -83,45 +84,45 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-floating form-field">
+                        <textarea id="collection_summary" style="height: 100px" class="form-control" placeholder="Collection Summary"></textarea>
+                        <label for="collection_summary">Collection Summary</label>
+                    </div>
+                    <input type="reset" class="btn btn-outline-primary">
                     <button id="create-collection" type="button" class="btn btn-outline-primary">Submit</button>
                 </form>
             </div>
         </div>
-
-        <div class="my-4">
+        <div class="my-4"> <!-- Feature -->
             <h4>Feature</h4>
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature</button>
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span class="material-icons button-icons">add_circle</span></button>
             <div id="new_feature" class="collapse">
                 <h5>New feature</h5>
                 <form id="feature_form">
                     <div class="row">
                         <div class="col">
                             <div class="form-floating form-field">
-                                <input id="poem_id" type="text" class="form-control" placeholder="Poem ID"/>
-                                <label for="poem_id">Poem ID</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-floating form-field">
-                                <input id="poem_title" type="text" class="form-control" placeholder="Poem Title"/>
-                                <label for="poem_title">Poem Title</label>
+                                <input id="feat_poem_id" type="text" class="form-control" placeholder="Poem ID"/>
+                                <label for="feat_poem_id">Poem ID</label>
                             </div>
                         </div>
                     </div>
                     <div class="form-floating form-field">
-                        <textarea id="feature_text" style="height: 100px" class="form-control" placeholder="Feature Text"></textarea>
-                        <label for="feature_text">Feature Text</label>
+                        <textarea id="feat_feature_text" style="height: 100px" class="form-control" placeholder="Feature Text"></textarea>
+                        <label for="feat_feature_text">Feature Text</label>
                     </div>
                     <div class="form-field form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="current_feature">
-                        <label class="form-check-label" for="current_feature">Set as current feature</label>
+                        <input class="form-check-input" type="checkbox" id="feat_set_current_feature">
+                        <label class="form-check-label" for="feat_set_current_feature">Set as current feature</label>
                     </div>
-                    <button id="" type="button" class="btn btn-outline-primary">Submit</button>
+                    <input type="reset" class="btn btn-outline-primary">
+                    <button id="create-feature" type="button" class="btn btn-outline-primary">Submit</button>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- Javascript scripts -->
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./renderer.js"></script>
 </body>

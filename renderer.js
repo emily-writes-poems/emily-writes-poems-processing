@@ -15,13 +15,13 @@ document.getElementById('process-poem').onclick = () => {
 
 document.getElementById('create-details').onclick = () => {
     console.log('create details file!');
-    let poem_id = document.getElementById('details_poem_id');
-    let poem_title = document.getElementById('details_poem_title');
-    let poem_behind_title = document.getElementById('details_behind_title');
-    let poem_behind_poem = document.getElementById('details_behind_poem');
-    let poem_lines = document.getElementById('details_poem_lines');
+    let poem_id = document.getElementById('details_poem_id').value;
+    let poem_title = document.getElementById('details_poem_title').value;
+    let poem_behind_title = document.getElementById('details_behind_title').value;
+    let poem_behind_poem = document.getElementById('details_behind_poem').value;
+    let poem_lines = document.getElementById('details_poem_lines').value;
 
-    ret = ipcRenderer.send('create-new-details', [poem_id.value, poem_title.value, poem_behind_title.value, poem_behind_poem.value, poem_lines.value]);
+    ret = ipcRenderer.send('create-new-details', [poem_id, poem_title, poem_behind_title, poem_behind_poem, poem_lines]);
     if (ret!=-1) {
         new Notification('Details file created', { body : ret } )
     } else {
@@ -64,12 +64,9 @@ document.getElementById('delete-poem').onclick = () => {
     }
 }
 
-
 document.getElementById('select-collection_form').addEventListener('show.bs.collapse', () => {
-    console.log('wowie');
     showCollections();
 });
-
 
 function showCollections() {
     console.log('gathering all poem collections');
@@ -87,4 +84,13 @@ function showCollections() {
 
         dropdown.add(opt);
     }
+}
+
+document.getElementById('create-feature').onclick = () => {
+    console.log('create new feature!');
+    let poem_id = document.getElementById('feat_poem_id').value;
+    let feature_text = document.getElementById('feat_feature_text').value;
+    let set_current_feature = document.getElementById('feat_set_current_feature').checked;
+
+    ret = ipcRenderer.send('create-new-feature', [poem_id, feature_text, set_current_feature])
 }
