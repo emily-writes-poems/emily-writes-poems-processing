@@ -15,12 +15,25 @@
         <h1 class="my-4">Emily Writes Poems Processing</h1>
         <div class="my-4"> <!-- Poem -->
             <h4>Poem</h4>
+            <!-- Display all poems -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-poem_form">Display all poems <span class="material-icons button-icons">menu_open</span></button>
+            <form id="select-poem_form" class="collapse">
+                <div class="row">
+                    <div class="col">
+                        <select class="form-select" id="select-poem-dropdown"></select>
+                    </div>
+                </div>
+            </form>
+            <!-- Process poem file -->
             <button id="process-poem" class="btn btn-outline-primary">Process a poem file <span class="material-icons button-icons">file_open</span></button>
+            <!-- Remove poem -->
             <button id="delete-poem" class="btn btn-outline-primary">Remove a poem <span class="material-icons button-icons">file_open</span></button>
         </div>
         <div class="my-4"> <!-- Details -->
             <h4>Details</h4>
+            <!-- Process poem details file -->
             <button id="process-details" class="btn btn-outline-primary">Process a poem details file <span class="material-icons button-icons">file_open</span></button>
+            <!-- Create poem details file -->
             <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_details">Create a new poem details file <span class="material-icons button-icons">note_add</span></button>
             <div id="new_details" class="collapse">
                 <h5>New details file</h5>
@@ -58,6 +71,7 @@
         </div>
         <div class="my-4"> <!-- Collection -->
             <h4>Collection</h4>
+            <!-- Display all poem collections -->
             <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-collection_form">Display all collections <span class="material-icons button-icons">menu_open</span></button>
             <form id="select-collection_form" class="collapse">
                 <div class="row">
@@ -66,6 +80,7 @@
                     </div>
                 </div>
             </form>
+            <!-- Create poem collection -->
             <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection <span class="material-icons button-icons">add_circle</span></button>
             <div id="new_collection" class="collapse">
                 <h5>New collection</h5>
@@ -73,20 +88,20 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-floating form-field">
-                                <input id="collection_id" type="text" class="form-control" placeholder="Collection ID"/>
-                                <label for="collection_id">Collection ID</label>
+                                <input id="coll_collection_id" type="text" class="form-control" placeholder="Collection ID"/>
+                                <label for="coll_collection_id">Collection ID</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-floating form-field">
-                                <input id="collection_name" type="text" class="form-control" placeholder="Collection Name"/>
-                                <label for="collection_name">Collection Name</label>
+                                <input id="coll_collection_name" type="text" class="form-control" placeholder="Collection Name"/>
+                                <label for="coll_collection_name">Collection Name</label>
                             </div>
                         </div>
                     </div>
                     <div class="form-floating form-field">
-                        <textarea id="collection_summary" style="height: 100px" class="form-control" placeholder="Collection Summary"></textarea>
-                        <label for="collection_summary">Collection Summary</label>
+                        <textarea id="coll_collection_summary" style="height: 100px" class="form-control" placeholder="Collection Summary"></textarea>
+                        <label for="coll_collection_summary">Collection Summary</label>
                     </div>
                     <input type="reset" class="btn btn-outline-primary">
                     <button id="create-collection" type="button" class="btn btn-outline-primary">Submit</button>
@@ -95,6 +110,7 @@
         </div>
         <div class="my-4"> <!-- Feature -->
             <h4>Feature</h4>
+            <!-- Create feature -->
             <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span class="material-icons button-icons">add_circle</span></button>
             <div id="new_feature" class="collapse">
                 <h5>New feature</h5>

@@ -13,6 +13,10 @@ document.getElementById('process-poem').onclick = () => {
     }
 }
 
+document.getElementById('select-poem_form').addEventListener('show.bs.collapse', () => {
+    showPoems();
+});
+
 document.getElementById('create-details').onclick = () => {
     console.log('create details file!');
     let poem_id = document.getElementById('details_poem_id').value;
@@ -42,8 +46,12 @@ document.getElementById('process-details').onclick = () => {
 }
 
 document.getElementById('create-collection').onclick = () => {
-    console.log('create collection!');
-    // ret = ipc.send();
+    console.log('create new collection!');
+    let collection_id = document.getElementById('coll_collection_id').value;
+    let collection_name = document.getElementById('coll_collection_name').value;
+    let collection_summary = document.getElementById('coll_collection_summary').value;
+
+    ret = ipcRenderer.send('create-new-collection', [collection_id, collection_name, collection_summary])
 }
 
 document.getElementById('delete-poem').onclick = () => {
@@ -70,7 +78,7 @@ document.getElementById('select-collection_form').addEventListener('show.bs.coll
 
 function showCollections() {
     console.log('gathering all poem collections');
-    ret = ipcRenderer.sendSync('gather-collections');
+    ret = ipcRenderer.sendSync('gather-all-collections');
 
     console.log('creating poem collections dropdown menu');
     var dropdown = document.getElementById('select-collection-dropdown');
@@ -78,12 +86,32 @@ function showCollections() {
       dropdown.removeChild(dropdown.firstChild);
     }
     for(var i = 0; i < ret.length; i++) {
-        var opt = document.createElement("option")
-        opt.textContent = ret[i]["collection_name"]
-        opt.value = ret[i]["collection_id"]
+        let opt = document.createElement("option");
+        opt.textContent = ret[i]["collection_name"];
+        opt.value = ret[i]["collection_id"];
 
         dropdown.add(opt);
     }
+}
+
+function showPoems() {
+    console.log('gathering all poems');
+    ret = ipcRenderer.sendSync('gather-all-poems');
+
+    console.log('creating poems dropdown menu');
+    var dropdown = document.getElementById('select-poem-dropdown');
+    while (dropdown.firstChild) {
+        dropdown.removeChild(dropdown.firstChild);
+    }
+
+    for(var i = 0; i < ret.length; i++) {
+        let opt = document.createElement("option");
+        opt.textContent = ret[i]["poem_title"];
+        opt.value = ret[i]["poem_id"];
+
+        dropdown.add(opt);
+    }
+
 }
 
 document.getElementById('create-feature').onclick = () => {

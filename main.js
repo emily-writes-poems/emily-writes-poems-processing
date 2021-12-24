@@ -11,6 +11,7 @@ var mongo_database = null
 MongoClient.connect(config.mongo_conn, (err, client) => {
    if(err) throw err;
    mongo_database = client.db(config.mongo_db);
+   console.log('finished connecting to Mongo DB')
 });
 
 
@@ -32,13 +33,24 @@ function createWindow () {
 
 
 // Gather list of poem collections
-ipcMain.on('gather-collections', (event, args) => {
+ipcMain.on('gather-all-collections', (event, args) => {
     mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: {"collection_id" : 1, "collection_name" : 1, _id : 0} }).toArray((err, result) => {
         if(err) throw err;
         // console.log(result);
         event.returnValue = result;
     });
 });
+
+
+// Gather list of poems
+ipcMain.on('gather-all-poems', (event, args) => {
+    mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, _id : 0} }).toArray((err, result) => {
+        if(err) throw err;
+        // console.log(result);
+        event.returnValue = result;
+    })
+})
+
 
 
 // Create new poem details file from form fields
@@ -157,6 +169,16 @@ ipcMain.on('create-new-feature', (event, args) => {
             console.log('poem not found to create new feature');
             event.returnValue = -1;
         }
+    } );
+});
+
+
+// Create new poem collection from form fields
+ipcMain.on('create-new-collection', (event, args) => {
+    // Insert into DB
+    mongo_database.collection(config.mongo_poemcolls_coll).insertOne( { "collection_id" : args[0], "collection_name" : args[1], "collection_summary" : args[2] }, (err, result) => {
+        if(err) throw err;
+        console.log("Inserted new collection: " + args)
     } );
 });
 
