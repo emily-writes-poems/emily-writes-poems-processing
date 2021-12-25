@@ -52,7 +52,6 @@ ipcMain.on('gather-all-poems', (event, args) => {
 })
 
 
-
 // Create new poem details file from form fields
 ipcMain.on('create-new-details', (event, args) => {
     var fs = require('fs');
@@ -149,25 +148,22 @@ ipcMain.on('delete-poem-confirmation', (event, args) => {
 
 // Create new feature from form fields
 ipcMain.on('create-new-feature', (event, args) => {
-    let poem_title = null;
-    // Search the DB for the poem title corresponding to poem id - if poem doesn't exist, return without creating feature
-    mongo_database.collection(config.mongo_poems_coll).findOne( {"poem_id" : args[0]}, (err, result) => {
-        if(result) {  // Set poem title
-            poem_title = result["poem_title"];
-            if (args[2] == true) { // Want to set this new feature as the current feature, so unset any existing current feature
-                mongo_database.collection(config.mongo_feat_coll).updateOne( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, result) => {
-                    if(err) throw err;
-                    console.log("Successfully unset current feature.");
-                } );
-            }
-            // Insert into DB
-            mongo_database.collection(config.mongo_feat_coll).insertOne( { "poem_id" : args[0], "poem_title" : poem_title, "featured_text" : args[1], "currently_featured" : args[2] }, (err, result) => {
-                if(err) throw err;
-                console.log("Inserted new feature: " + args)
-            } );
-        } else {  // Poem not found, return
-            console.log('poem not found to create new feature');
-            event.returnValue = -1;
+    let [poem_id, poem_title, feature_text, set_current_feature] = args;
+
+    if (set_current_feature == true) { // Want to set this new feature as the current feature, so unset any existing current feature
+        mongo_database.collection(config.mongo_feat_coll).updateOne( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, result) => {
+            if(err) throw err;
+            console.log("Successfully unset current feature.");
+        } );
+    }
+    // Insert into DB
+    mongo_database.collection(config.mongo_feat_coll).insertOne( { "poem_id" : poem_id, "poem_title" : poem_title, "featured_text" : feature_text, "currently_featured" : set_current_feature }, (err, result) => {
+        if(err) throw err;
+        console.log("Inserted new feature: " + args)
+        if(set_current_feature) {
+            event.returnValue = "Set as current feature: " + poem_title;
+        } else {
+            event.returnValue = "Not set as current feature.";
         }
     } );
 });
@@ -178,7 +174,8 @@ ipcMain.on('create-new-collection', (event, args) => {
     // Insert into DB
     mongo_database.collection(config.mongo_poemcolls_coll).insertOne( { "collection_id" : args[0], "collection_name" : args[1], "collection_summary" : args[2] }, (err, result) => {
         if(err) throw err;
-        console.log("Inserted new collection: " + args)
+        console.log("Inserted new collection: " + args);
+        event.returnValue = args[1];
     } );
 });
 

@@ -14,7 +14,7 @@ document.getElementById('process-poem').onclick = () => {
 }
 
 document.getElementById('select-poem_form').addEventListener('show.bs.collapse', () => {
-    showPoems();
+    createDropdown('gather-all-poems', 'select-poem-dropdown', 'poem_id', 'poem_title');
 });
 
 document.getElementById('create-details').onclick = () => {
@@ -25,11 +25,12 @@ document.getElementById('create-details').onclick = () => {
     let poem_behind_poem = document.getElementById('details_behind_poem').value;
     let poem_lines = document.getElementById('details_poem_lines').value;
 
-    ret = ipcRenderer.send('create-new-details', [poem_id, poem_title, poem_behind_title, poem_behind_poem, poem_lines]);
+    ret = ipcRenderer.sendSync('create-new-details', [poem_id, poem_title, poem_behind_title, poem_behind_poem, poem_lines]);
     if (ret!=-1) {
         new Notification('Details file created', { body : ret } )
     } else {
-        console.log('oh no!')
+        console.log('error creating new details file');
+        new Notification('Error creating new details file');
     }
 }
 
@@ -51,7 +52,10 @@ document.getElementById('create-collection').onclick = () => {
     let collection_name = document.getElementById('coll_collection_name').value;
     let collection_summary = document.getElementById('coll_collection_summary').value;
 
-    ret = ipcRenderer.send('create-new-collection', [collection_id, collection_name, collection_summary])
+    ret = ipcRenderer.sendSync('create-new-collection', [collection_id, collection_name, collection_summary])
+    if (ret!=-1) {
+        new Notification('Created new collection successfully', { body : ret } )
+    }
 }
 
 document.getElementById('delete-poem').onclick = () => {
@@ -73,52 +77,44 @@ document.getElementById('delete-poem').onclick = () => {
 }
 
 document.getElementById('select-collection_form').addEventListener('show.bs.collapse', () => {
-    showCollections();
+    createDropdown('gather-all-collections', 'select-collection-dropdown', 'collection_name', 'collection_id');
 });
 
-function showCollections() {
-    console.log('gathering all poem collections');
-    ret = ipcRenderer.sendSync('gather-all-collections');
+function createDropdown(function_call, dropdown_menu, option_text, option_value) {
+    ret = ipcRenderer.sendSync(function_call);
 
-    console.log('creating poem collections dropdown menu');
-    var dropdown = document.getElementById('select-collection-dropdown');
-    while (dropdown.firstChild) {
-      dropdown.removeChild(dropdown.firstChild);
-    }
-    for(var i = 0; i < ret.length; i++) {
-        let opt = document.createElement("option");
-        opt.textContent = ret[i]["collection_name"];
-        opt.value = ret[i]["collection_id"];
-
-        dropdown.add(opt);
-    }
-}
-
-function showPoems() {
-    console.log('gathering all poems');
-    ret = ipcRenderer.sendSync('gather-all-poems');
-
-    console.log('creating poems dropdown menu');
-    var dropdown = document.getElementById('select-poem-dropdown');
+    var dropdown = document.getElementById(dropdown_menu);
     while (dropdown.firstChild) {
         dropdown.removeChild(dropdown.firstChild);
     }
 
     for(var i = 0; i < ret.length; i++) {
         let opt = document.createElement("option");
-        opt.textContent = ret[i]["poem_title"];
-        opt.value = ret[i]["poem_id"];
-
+        opt.text = ret[i][option_text];
+        opt.value = ret[i][option_value];
         dropdown.add(opt);
     }
 
 }
 
+document.getElementById('new_feature').addEventListener('show.bs.collapse', () => {
+    createDropdown('gather-all-poems', 'feat_select-poem-dropdown', 'poem_id', 'poem_title');
+});
+
 document.getElementById('create-feature').onclick = () => {
     console.log('create new feature!');
-    let poem_id = document.getElementById('feat_poem_id').value;
+    let selected_poem = document.getElementById('feat_select-poem-dropdown');
+    let poem_id = selected_poem.options[selected_poem.selectedIndex].text;
+    let poem_title = selected_poem.options[selected_poem.selectedIndex].value;
     let feature_text = document.getElementById('feat_feature_text').value;
     let set_current_feature = document.getElementById('feat_set_current_feature').checked;
 
-    ret = ipcRenderer.send('create-new-feature', [poem_id, feature_text, set_current_feature])
+    ret = ipcRenderer.sendSync('create-new-feature', [poem_id, poem_title, feature_text, set_current_feature])
+
+    if (ret!=-1) {
+        new Notification('Created new feature successfully', { body : ret } )
+    } else {
+        console.log('error creating new feature');
+        new Notification('Error creating new feature');
+    }
 }
