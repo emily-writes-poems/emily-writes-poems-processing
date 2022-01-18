@@ -3,6 +3,7 @@ const dialog = require('electron').dialog
 const { execSync } = require('child_process')
 const { MongoClient } = require('mongodb');
 
+var fs = require('fs');
 var config = require('./config')
 
 var mongo_database = null
@@ -49,12 +50,43 @@ ipcMain.on('gather-all-poems', (event, args) => {
         // console.log(result);
         event.returnValue = result;
     })
+});
+
+
+// Gather list of features
+ipcMain.on('gather-all-features', (event, args) => {
+    mongo_database.collection(config.mongo_feat_coll).find({}, { projection: {_id : 0} }).toArray((err, result) => {
+        if(err) throw err;
+        event.returnValue = result;
+    })
+});
+
+
+// Create new poem file from form fields
+ipcMain.on('create-new-poem', (event, args) => {
+    console.log('attempting to create new poem');
+    let file_name = config.poems_folder + args[0] + '.txt'
+
+    var poem_file = fs.createWriteStream(file_name)
+    poem_file.on('open', () => {
+        poem_file.write(args[1]);  // title
+        poem_file.write("\n" + config.poem_author + "\n");  // author
+        poem_file.write(args[2]);  // date
+        poem_file.write("\n\n");
+        poem_file.write(args[3]);  // lines
+
+        poem_file.end();
+    });
+
+    poem_file.on('close', () => {
+        event.returnValue = file_name;
+    })
 })
 
 
 // Create new poem details file from form fields
 ipcMain.on('create-new-details', (event, args) => {
-    var fs = require('fs');
+    console.log('attempting to create new details');
     let file_name = config.details_folder + args[0] + '_ANNOTATED.txt'
 
     var details_file = fs.createWriteStream(file_name)
@@ -142,6 +174,29 @@ ipcMain.on('delete-poem-confirmation', (event, args) => {
             return
         }
         return
+    })
+})
+
+
+// Confirm deleting a poem feature
+ipcMain.on('delete-feature', (event, args) => {
+    let options = {
+        buttons: ["Yes" , "No"],
+        message: 'Are you sure you want to delete this poem feature?',
+        detail: args[0] + '\n' + args[1],
+        type: 'question'
+    }
+
+    dialog.showMessageBox(options).then((response) => {
+        if (response.response == 0) {  // confirmed to delete
+            mongo_database.collection(config.mongo_feat_coll).deleteOne( { "poem_id" : args[0], "featured_text" : args[1] }, (err, result) => {
+                if(err) throw err;
+                console.log("Successfully deleted poem feature.")
+                event.returnValue = 0;
+            })
+        } else {
+            event.returnValue = -1;
+        }
     })
 })
 

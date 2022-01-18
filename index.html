@@ -13,10 +13,56 @@
 <body>
     <div class="container py-3">
         <h1 class="my-4">Emily Writes Poems Processing</h1>
-        <div class="my-4"> <!-- Poem -->
+        <!-- Create new ... -->
+        <div class="my-4">
+            <h4>Create <span class="material-icons">note_add</span></h4>
+            <!-- Create poem and/or poem details file -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new-poem-details">Create a new poem and/or details file <span class="material-icons">note_add</span></button>
+            <div id="new-poem-details" class="collapse">
+                <h5>New poem and/or details file</h5>
+                <form id="new-poem-details_form">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating form-field">
+                                <input id="poem-details_poem_id" type="text" class="form-control" placeholder="Poem ID"/>
+                                <label for="poem-details_poem_id">Poem ID</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating form-field">
+                                <input id="poem-details_poem_title" type="text" class="form-control" placeholder="Poem Title"/>
+                                <label for="poem-details_poem_title">Poem Title</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating form-field">
+                                <input id="poem_poem_date" type="text" class="form-control" placeholder="Poem Date"/>
+                                <label for="poem_poem_date">Poem Date</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating form-field">
+                        <textarea id="poem-details_poem_lines" style="height: 200px" class="form-control" placeholder="Poem Lines"></textarea>
+                        <label for="poem-details_poem_lines">Poem Lines</label>
+                    </div>
+                    <div class="form-floating form-field">
+                        <textarea id="details_behind_title" style="height: 100px" class="form-control" placeholder="Behind the Title"></textarea>
+                        <label for="details_behind_title">Behind the Title</label>
+                    </div>
+                    <div class="form-floating form-field">
+                        <textarea id="details_behind_poem" style="height: 100px" class="form-control" placeholder="Behind the Poem"></textarea>
+                        <label for="details_behind_poem">Behind the Poem</label>
+                    </div>
+                    <input type="reset" class="btn btn-outline-primary">
+                    <button id="create-poem-details" type="button" class="btn btn-outline-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+        <!-- Poem -->
+        <div class="my-4">
             <h4>Poem</h4>
             <!-- Display all poems -->
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-poem_form">Display all poems <span class="material-icons button-icons">menu_open</span></button>
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-poem_form">Display all poems <span class="material-icons">menu_open</span></button>
             <form id="select-poem_form" class="collapse">
                 <div class="row">
                     <div class="col">
@@ -25,54 +71,21 @@
                 </div>
             </form>
             <!-- Process poem file -->
-            <button id="process-poem" class="btn btn-outline-primary">Process a poem file <span class="material-icons button-icons">file_open</span></button>
+            <button id="process-poem" class="btn btn-outline-primary">Process a poem file <span class="material-icons">file_open</span></button>
             <!-- Remove poem -->
-            <button id="delete-poem" class="btn btn-outline-primary">Remove a poem <span class="material-icons button-icons">file_open</span></button>
+            <button id="delete-poem" class="btn btn-outline-primary">Remove a poem <span class="material-icons">file_open</span></button>
         </div>
-        <div class="my-4"> <!-- Details -->
+        <!-- Details -->
+        <div class="my-4">
             <h4>Details</h4>
             <!-- Process poem details file -->
-            <button id="process-details" class="btn btn-outline-primary">Process a poem details file <span class="material-icons button-icons">file_open</span></button>
-            <!-- Create poem details file -->
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_details">Create a new poem details file <span class="material-icons button-icons">note_add</span></button>
-            <div id="new_details" class="collapse">
-                <h5>New details file</h5>
-                <form id="details_form">
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-floating form-field">
-                                <input id="details_poem_id" type="text" class="form-control" placeholder="Poem ID"/>
-                                <label for="details_poem_id">Poem ID</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-floating form-field">
-                                <input id="details_poem_title" type="text" class="form-control" placeholder="Poem Title"/>
-                                <label for="details_poem_title">Poem Title</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-floating form-field">
-                        <textarea id="details_behind_title" style="height: 150px" class="form-control" placeholder="Behind the Title"></textarea>
-                        <label for="details_behind_title">Behind the Title</label>
-                    </div>
-                    <div class="form-floating form-field">
-                        <textarea id="details_behind_poem" style="height: 150px" class="form-control" placeholder="Behind the Poem"></textarea>
-                        <label for="details_behind_poem">Behind the Poem</label>
-                    </div>
-                    <div class="form-floating form-field">
-                        <textarea id="details_poem_lines" style="height: 250px" class="form-control" placeholder="Poem Lines"></textarea>
-                        <label for="details_poem_lines">Poem Lines</label>
-                    </div>
-                    <input type="reset" class="btn btn-outline-primary">
-                    <button id="create-details" type="button" class="btn btn-outline-primary">Submit</button>
-                </form>
-            </div>
+            <button id="process-details" class="btn btn-outline-primary">Process a poem details file <span class="material-icons">file_open</span></button>
         </div>
-        <div class="my-4"> <!-- Collection -->
+        <!-- Collection -->
+        <div class="my-4">
             <h4>Collection</h4>
             <!-- Display all poem collections -->
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-collection_form">Display all collections <span class="material-icons button-icons">menu_open</span></button>
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-collection_form">Display all collections <span class="material-icons">menu_open</span></button>
             <form id="select-collection_form" class="collapse">
                 <div class="row">
                     <div class="col">
@@ -81,10 +94,10 @@
                 </div>
             </form>
             <!-- Create poem collection -->
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection <span class="material-icons button-icons">add_circle</span></button>
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection <span class="material-icons">add_circle</span></button>
             <div id="new_collection" class="collapse">
                 <h5>New collection</h5>
-                <form id="collection_form">
+                <form id="new_collection_form">
                     <div class="row">
                         <div class="col">
                             <div class="form-floating form-field">
@@ -108,10 +121,23 @@
                 </form>
             </div>
         </div>
-        <div class="my-4"> <!-- Feature -->
+        <!-- Feature -->
+        <div class="my-4">
             <h4>Feature</h4>
+            <!-- Display all features -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#features_table_div">Display all features <span class="material-icons">menu_open</span></button>
+            <div id="features_table_div" class="collapse">
+                <table id="features_table" class="table table-bordered text-center">
+                    <thead>
+                        <th><span class="material-icons">star</span></th>
+                        <th>Poem Title</th>
+                        <th>Feature Text</th>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
             <!-- Create feature -->
-            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span class="material-icons button-icons">add_circle</span></button>
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span class="material-icons">add_circle</span></button>
             <div id="new_feature" class="collapse">
                 <h5>New feature</h5>
                 <form id="feature_form">

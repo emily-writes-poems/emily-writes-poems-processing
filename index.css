@@ -19,7 +19,7 @@
     border-color: #5B58BB;
     color: white;
 }
-.button-icons {
+.material-icons {
     vertical-align: middle;
     margin-top: -0.1em;
 }
@@ -44,4 +44,16 @@ textarea {
 .form-field {
     color: #817E92;
     margin-bottom: 0.5em;
+}
+
+th {
+    color: #5B58BB;
+}
+
+.delete-option {
+    text-decoration: underline;
+    font-size: 0.75em;
+    cursor: pointer;
+    color: #817E92;
+    margin-left: 0.5em;
 }
