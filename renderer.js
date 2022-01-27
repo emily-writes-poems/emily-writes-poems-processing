@@ -57,7 +57,7 @@ document.getElementById('create-poem-details').onclick = () => {
 
 document.getElementById('process-poem').onclick = () => {
     console.log('process poem!');
-    ret = ipcRenderer.sendSync('open-file-dialog', [config.poems_folder, config.process_poem_script]);
+    ret = ipcRenderer.sendSync('open-file-dialog', [config.poems_folder, true, config.process_poem_script]);
     if(ret==1){
         new Notification('Poem not processed', { body : 'No poem file was chosen to process' } )
     } else if(ret==-1){
@@ -75,7 +75,7 @@ document.getElementById('select-poem_form').addEventListener('show.bs.collapse',
 
 document.getElementById('process-details').onclick = () => {
     console.log('process details!');
-    ret = ipcRenderer.sendSync('open-file-dialog', [config.details_folder, config.process_details_script]);
+    ret = ipcRenderer.sendSync('open-file-dialog', [config.details_folder, true, config.process_details_script]);
     if (ret==1) {
         new Notification('Details not processed', { body : 'No poem details file was chosen to process' } )
     } else if (ret==-1) {
@@ -100,21 +100,14 @@ document.getElementById('create-collection').onclick = () => {
 
 
 document.getElementById('delete-poem').onclick = () => {
-    // console.log('remove poem!');
-    // // First gather the effects of removing this poem
-    // ret = ipcRenderer.sendSync('open-file-dialog', [config.poems_folder, config.remove_poem_script, "find"]);
-    // // Pass data to confirmation modal
-    // if (ret!=-1) {
-    //     ret_array = ret.split('\n');
-    //     let d_poems, d_collections, d_features, poem_id;
-    //     [d_poems, d_collections, d_features] = (ret_array.slice(0,3)).map(x => x.slice(1,-1));
-    //     poem_id = ret_array[3]
-    //     poem_file = ret_array[4]
-    //     // Remove poem with confirmed options
-    //     ipcRenderer.sendSync('delete-poem-confirmation', [d_poems, d_collections, d_features, poem_id, poem_file])
-    // } else {
-    //     console.log('no poem was chosen to delete')
-    // }
+    console.log('remove poem!');
+    ret = ipcRenderer.sendSync('open-file-dialog', [config.poems_folder, false, 'delete-poem']);
+
+    if (ret!=-1) {
+        new Notification('Successfully deleted poem', { body : ret });
+    } else {
+        new Notification('Did not delete poem')
+    }
 }
 
 

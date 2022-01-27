@@ -4,7 +4,8 @@ const { execSync } = require('child_process')
 const { MongoClient } = require('mongodb');
 
 var fs = require('fs');
-var config = require('./config')
+var path = require('path');
+var config = require('./config');
 
 var mongo_database = null
 
@@ -108,16 +109,27 @@ ipcMain.on('create-new-details', (event, args) => {
 
 // Show open file dialog:
 // If a file was chosen, run the specified command via shell script
-ipcMain.on('open-file-dialog', (event, [path, command, args]) => {
+ipcMain.on('open-file-dialog', (event, [path, isShellCommand, command, args]) => {
     dialog.showOpenDialog({
         defaultPath: path,
         properties: ['openFile']
     }).then(selected_file => {
         if (!selected_file.canceled) {
-            ret = runShellCommand(createCommand(command, [selected_file.filePaths, args]));
-            if (ret==0) {
-                event.returnValue = selected_file.filePaths;
-            } else { // Some error occured when running command
+            if (isShellCommand) {
+                let ret = runShellCommand(createCommand(command, [selected_file.filePaths, args]));
+                if (ret == 0) {
+                    event.returnValue = selected_file.filePaths;
+                } else { // Some error occured when running command
+                    event.returnValue = -1;
+                }
+            } else if (command == 'delete-poem') {  // Delete poem
+                let ret = deletePoem(selected_file.filePaths[0]);
+                if (ret == 0) {
+                    event.returnValue = selected_file.filePaths;
+                } else {
+                    event.returnValue = -1;
+                }
+            } else {
                 event.returnValue = -1;
             }
         } else { // Open file menu was canceled - No file was selected.
@@ -150,32 +162,26 @@ function runShellCommand(command) {
 }
 
 
-// Awful code related to deleting a poem - TODO: completely rewriting this process
-ipcMain.on('delete-poem-confirmation', (event, args) => {
-    let details = [];
-    details.push('POEMS: ' + args[0])
-    details.push('COLLECTIONS: ' + args[1])
-    details.push('FEATURES: ' + args[2])
+// Handle poem deletion
+function deletePoem(poem_file) {
+    let poem_id = path.basename(poem_file, '.txt');
 
     let options = {
-        buttons: ["Yes" , "Cancel"],
-        message: 'Confirm you want to remove: ' + args[3],
-        detail: details.join('\n\n'),
-        checkboxLabel: 'Delete all associated features',
-        title: 'Confirm removing ' + args[3],
+        buttons: ["Yes" , "No"],
+        message: 'Are you sure you want to delete this poem? poem_id: ' + poem_id,
         type: 'question'
     }
 
     dialog.showMessageBox(options).then((response) => {
-        if (response.response == 0) {
-            featoption = response.checkboxChecked ? "delete" : "keep";
-            ret = runShellCommand(createCommand(config.remove_poem_script, [args[4], "delete", featoption]))
-            console.log(ret);
-            return
+        if (response.response == 0) {  // confirmed to delete
+            let ret = runShellCommand(createCommand(config.remove_poem_script, [poem_file]));
+            return ret;
+        } else {  // canceled deletion
+            console.log('Canceled poem deletion');
+            return -1;
         }
-        return
-    })
-})
+    });
+}
 
 
 // Confirm deleting a poem feature
@@ -235,9 +241,19 @@ ipcMain.on('create-new-collection', (event, args) => {
 });
 
 
+nativeTheme.on('updated', () => {
+    nativeTheme.themeSource = 'system';
+
+    if (nativeTheme.shouldUseDarkColors) {
+        app.dock.setIcon('./images/ewp-logo-alt.png');
+    } else {
+        app.dock.setIcon('./images/ewp-logo.png');
+    }
+});
+
 // Start up the app
 app.whenReady().then(() => {
-    createWindow()
+    createWindow();
 
     if (nativeTheme.shouldUseDarkColors) {
         app.dock.setIcon('./images/ewp-logo-alt.png');

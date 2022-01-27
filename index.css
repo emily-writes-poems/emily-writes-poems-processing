@@ -2,47 +2,110 @@
 #5B58BB
 #8A88D2
 #817E92
+#1A1324
+#F8F8FF
 */
-.btn {
-    margin: 0.25em 0.5em 0.25em 0;
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1A1324;
+        color: #8A88D2;
+    }
+
+    .btn-outline-primary {
+        background-color: #5B58BB;
+        border-color: #817E92;
+        color: #F8F8FF;
+    }
+
+    .btn-outline-primary:hover,
+    .btn-outline-primary:active,
+    .btn-outline-primary:visited,
+    .btn-outline-primary:focus,
+    .form-check-input:checked {
+        background-color: #F8F8FF;
+        border-color: #5B58BB;
+        color: #5B58BB;
+    }
+
+    .form-control, .form-control:focus {
+        background-color: #8A88D2;
+        color: #F8F8FF;
+    }
+
+    .form-field label, .form-field label:focus{
+        color: #F8F8FF;
+    }
+
+    td {
+        color: #F8F8FF;
+    }
+
 }
-.btn-outline-primary {
-    color: #5B58BB;
-    border-color: #5B58BB;
-}
-.btn-outline-primary:hover,
-.btn-outline-primary:active,
-.btn-outline-primary:visited,
-.btn-outline-primary:focus,
-.form-check-input:checked {
-    background-color: #5B58BB;
-    border-color: #5B58BB;
-    color: white;
-}
-.material-icons {
-    vertical-align: middle;
-    margin-top: -0.1em;
+
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #F8F8FF;
+        color: #1A1324;
+    }
+    .btn-outline-primary {
+        color: #5B58BB;
+        border-color: #5B58BB;
+    }
+
+    .btn-outline-primary:hover,
+    .btn-outline-primary:active,
+    .btn-outline-primary:visited,
+    .btn-outline-primary:focus,
+    .form-check-input:checked {
+        background-color: #5B58BB;
+        border-color: #5B58BB;
+        color: #F8F8FF;
+    }
+
+    .form-control, .form-control:focus {
+        background-color: #F8F8FF;
+        color: #8A88D2;
+    }
+
+    .form-field label, .form-field label:focus{
+        color: #1A1324;
+    }
 }
 
 body {
     font-family: Merriweather;
 }
+
+.btn {
+    margin: 0.25em 0.5em 0.25em 0;
+}
+
+.material-icons {
+    vertical-align: middle;
+    margin-top: -0.1em;
+}
+
 h1 {
     color: #5B58BB;
 }
+
+
 h4 {
     color: #5B58BB;
     margin: 0.75em 0;
 }
+
 h5 {
     color: #8A88D2;
     margin: 1em 0;
 }
+
 textarea {
     resize: none;
 }
+
 .form-field {
-    color: #817E92;
     margin-bottom: 0.5em;
 }
 
