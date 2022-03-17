@@ -2,6 +2,29 @@ const { ipcRenderer } = require('electron')
 var config = require('./config')
 
 
+document.querySelectorAll('.form-control').forEach(item => {
+    item.addEventListener('keydown', (event) => {
+        switch(event.key) {
+            case 'Meta':
+            case 'Shift':
+            case 'Control':
+            case 'Alt':
+            case 'CapsLock':
+                break;
+            case 'Tab':
+            case 'Escape':
+                document.getElementById('typewriter-bell').play();
+            case ' ':
+                document.getElementById('typewriter-space').play();
+            case 'Enter':
+                document.getElementById('typewriter-return').play();
+            default:
+                document.getElementById('typewriter-key').play();
+        };
+    });
+})
+
+
 function createDropdown(function_call, dropdown_menu, option_text, option_value) {
     ret = ipcRenderer.sendSync(function_call);
 
@@ -22,7 +45,7 @@ function createDropdown(function_call, dropdown_menu, option_text, option_value)
 
 
 document.getElementById('create-poem-details').onclick = () => {
-    console.log('create poem and/or details file!');
+    console.log('clicked to create poem and/or details file!');
     let poem_id = document.getElementById('poem-details_poem_id').value;
     let poem_title = document.getElementById('poem-details_poem_title').value;
     let poem_date = document.getElementById('poem_poem_date').value;
