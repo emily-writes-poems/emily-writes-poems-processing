@@ -36,7 +36,7 @@ function createWindow () {
 
 // Gather list of poem collections
 ipcMain.on('gather-all-collections', (event, args) => {
-    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: {"collection_id" : 1, "collection_name" : 1, _id : 0} }).toArray((err, result) => {
+    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: { _id : 0 } }).toArray((err, result) => {
         if(err) throw err;
         // console.log(result);
         event.returnValue = result;
@@ -105,6 +105,37 @@ ipcMain.on('create-new-details', (event, args) => {
 
     event.returnValue = file_name;
 })
+
+
+// Create new feature from form fields
+ipcMain.on('create-new-feature', (event, args) => {
+    let [poem_id, poem_title, feature_text, set_current_feature] = args;
+
+    if (set_current_feature == true) { // Want to set this new feature as the current feature, so unset any existing current feature
+        invalidateFeature();
+    }
+    // Insert into DB
+    mongo_database.collection(config.mongo_feat_coll).insertOne( { "poem_id" : poem_id, "poem_title" : poem_title, "featured_text" : feature_text, "currently_featured" : set_current_feature }, (err, result) => {
+        if(err) throw err;
+        console.log("Inserted new feature: " + args)
+        if(set_current_feature) {
+            event.returnValue = "Set as current feature: " + poem_title;
+        } else {
+            event.returnValue = "Not set as current feature.";
+        }
+    } );
+});
+
+
+// Create new poem collection from form fields
+ipcMain.on('create-new-collection', (event, args) => {
+    // Insert into DB
+    mongo_database.collection(config.mongo_poemcolls_coll).insertOne( { "collection_id" : args[0], "collection_name" : args[1], "collection_summary" : args[2] }, (err, result) => {
+        if(err) throw err;
+        console.log("Inserted new collection: " + args);
+        event.returnValue = args[1];
+    } );
+});
 
 
 // Show open file dialog:
@@ -184,6 +215,43 @@ function deletePoem(poem_file) {
 }
 
 
+// Handle editing current feature
+ipcMain.on('edit-current-feature', (event, args) => {
+    let options = {
+        buttons: ["Yes" , "No"],
+        message: "Are you sure?",
+        detail: args[0] + '\n' + args[1] + '\ncurrently featured: ' + args[2],
+        type: 'question'
+    }
+
+    dialog.showMessageBox(options).then((response) => {
+        if (response.response == 0) {  // confirmed
+            mongo_database.collection(config.mongo_feat_coll).updateMany( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, res) => {
+                if(err) { event.returnValue = -1; }
+                else {
+                    // console.log("Successfully unset current feature.");
+                    if(!args[2]) {
+                        mongo_database.collection(config.mongo_feat_coll).updateOne( { "poem_id" : args[0], "featured_text" : args[1] }, { "$set" : { "currently_featured" : true } }, (err, res) => {
+                            if(err) { event.returnValue = -1; }
+                            else {
+                                // console.log("Successfully set current feature.");
+                                event.returnValue = 0;
+                            }
+                        } );
+
+                    } else {
+                        // console.log('Not setting any feature.');
+                        event.returnValue = 0;
+                    }
+                }
+            })
+        } else {
+            event.returnValue = -1;
+        }
+    })
+})
+
+
 // Confirm deleting a poem feature
 ipcMain.on('delete-feature', (event, args) => {
     let options = {
@@ -207,40 +275,6 @@ ipcMain.on('delete-feature', (event, args) => {
 })
 
 
-// Create new feature from form fields
-ipcMain.on('create-new-feature', (event, args) => {
-    let [poem_id, poem_title, feature_text, set_current_feature] = args;
-
-    if (set_current_feature == true) { // Want to set this new feature as the current feature, so unset any existing current feature
-        mongo_database.collection(config.mongo_feat_coll).updateOne( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, result) => {
-            if(err) throw err;
-            console.log("Successfully unset current feature.");
-        } );
-    }
-    // Insert into DB
-    mongo_database.collection(config.mongo_feat_coll).insertOne( { "poem_id" : poem_id, "poem_title" : poem_title, "featured_text" : feature_text, "currently_featured" : set_current_feature }, (err, result) => {
-        if(err) throw err;
-        console.log("Inserted new feature: " + args)
-        if(set_current_feature) {
-            event.returnValue = "Set as current feature: " + poem_title;
-        } else {
-            event.returnValue = "Not set as current feature.";
-        }
-    } );
-});
-
-
-// Create new poem collection from form fields
-ipcMain.on('create-new-collection', (event, args) => {
-    // Insert into DB
-    mongo_database.collection(config.mongo_poemcolls_coll).insertOne( { "collection_id" : args[0], "collection_name" : args[1], "collection_summary" : args[2] }, (err, result) => {
-        if(err) throw err;
-        console.log("Inserted new collection: " + args);
-        event.returnValue = args[1];
-    } );
-});
-
-
 nativeTheme.on('updated', () => {
     nativeTheme.themeSource = 'system';
 
@@ -250,6 +284,7 @@ nativeTheme.on('updated', () => {
         app.dock.setIcon('./images/ewp-logo.png');
     }
 });
+
 
 // Start up the app
 app.whenReady().then(() => {
