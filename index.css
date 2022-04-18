@@ -113,10 +113,15 @@ th {
     color: #5B58BB;
 }
 
-.delete-option {
+.small-option {
     text-decoration: underline;
     font-size: 0.75em;
     cursor: pointer;
     color: #817E92;
     margin-left: 0.5em;
+}
+
+.collection-poems {
+    list-style-position: inside;
+    padding-left: 0;
 }
