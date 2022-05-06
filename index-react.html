@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="index.css" >
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather" rel="stylesheet">
+    <title>Emily Writes Poems Processing</title>
+</head>
+
+<body>
+    <div class="container py-3">
+        <h1 class="my-4">Emily Writes Poems Processing</h1>
+        <div id="poem-details-tab"></div>
+        <div id="collections-tab"></div>
+        <div id="feature-tab"></div>
+        <!-- Create new ... -->
+        <div class="my-4">
+            <h4>Create <span class="material-icons">note_add</span></h4>
+            <!-- Create poem and/or poem details file -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new-poem-details">Create a new poem and/or details file <span class="material-icons">note_add</span></button>
+            <div id="new-poem-details" class="collapse">
+                <h5>New poem and/or details file</h5>
+                <form id="new-poem-details_form">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating form-field">
+                                <input id="poem-details_poem_id" type="text" class="form-control" placeholder="Poem ID" required/>
+                                <label for="poem-details_poem_id">Poem ID</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating form-field">
+                                <input id="poem-details_poem_title" type="text" class="form-control" placeholder="Poem Title" required/>
+                                <label for="poem-details_poem_title">Poem Title</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating form-field">
+                                <input id="poem_poem_date" type="text" class="form-control" placeholder="Poem Date"/>
+                                <label for="poem_poem_date">Poem Date</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating form-field">
+                        <textarea id="poem-details_poem_lines" style="height: 200px" class="form-control" placeholder="Poem Lines" required></textarea>
+                        <label for="poem-details_poem_lines">Poem Lines</label>
+                    </div>
+                    <div class="form-floating form-field">
+                        <textarea id="details_behind_title" style="height: 100px" class="form-control" placeholder="Behind the Title"></textarea>
+                        <label for="details_behind_title">Behind the Title</label>
+                    </div>
+                    <div class="form-floating form-field">
+                        <textarea id="details_behind_poem" style="height: 100px" class="form-control" placeholder="Behind the Poem"></textarea>
+                        <label for="details_behind_poem">Behind the Poem</label>
+                    </div>
+                    <input type="reset" class="btn btn-outline-primary">
+                    <button id="create-poem-details" type="submit" class="btn btn-outline-primary">Submit</button>
+                </form>
+            </div>
+            <!-- Create poem collection -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection <span class="material-icons">add_circle</span></button>
+            <div id="new_collection" class="collapse">
+                <h5>New collection</h5>
+                <form id="new_collection_form">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating form-field">
+                                <input id="coll_collection_id" type="text" class="form-control" placeholder="Collection ID" required/>
+                                <label for="coll_collection_id">Collection ID</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating form-field">
+                                <input id="coll_collection_name" type="text" class="form-control" placeholder="Collection Name" required/>
+                                <label for="coll_collection_name">Collection Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating form-field">
+                        <textarea id="coll_collection_summary" style="height: 100px" class="form-control" placeholder="Collection Summary"></textarea>
+                        <label for="coll_collection_summary">Collection Summary</label>
+                    </div>
+                    <input type="reset" class="btn btn-outline-primary">
+                    <button id="create-collection" type="submit" class="btn btn-outline-primary">Submit</button>
+                </form>
+            </div>
+            <!-- Create feature -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span class="material-icons">add_circle</span></button>
+            <div id="new_feature" class="collapse">
+                <h5>New feature</h5>
+                <form id="feature_form">
+                    <div class="row">
+                        <div class="col">
+                            <select class="form-select" id="feat_select-poem-dropdown"></select>
+                        </div>
+                    </div>
+                    <div class="form-floating form-field">
+                        <textarea id="feat_feature_text" style="height: 100px" class="form-control" placeholder="Feature Text" required></textarea>
+                        <label for="feat_feature_text">Feature Text</label>
+                    </div>
+                    <div class="form-field form-check">
+                        <input class="form-check-input" type="checkbox" id="feat_set_current_feature">
+                        <label class="form-check-label" for="feat_set_current_feature">Set as current feature</label>
+                    </div>
+                    <input type="reset" class="btn btn-outline-primary">
+                    <button id="create-feature" type="submit" class="btn btn-outline-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+        <!-- Poem -->
+        <div class="my-4">
+            <h4>Poem</h4>
+            <!-- Display all poems -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#select-poem_form">Display all poems <span class="material-icons">menu_open</span></button>
+            <form id="select-poem_form" class="collapse">
+                <div class="row">
+                    <div class="col">
+                        <select class="form-select" id="select-poem-dropdown"></select>
+                    </div>
+                </div>
+            </form>
+            <!-- Process poem file -->
+            <button id="process-poem" class="btn btn-outline-primary">Process a poem file <span class="material-icons">file_open</span></button>
+            <!-- Remove poem -->
+            <button id="delete-poem" class="btn btn-outline-primary">Remove a poem <span class="material-icons">file_open</span></button>
+        </div>
+        <!-- Details -->
+        <div class="my-4">
+            <h4>Details</h4>
+            <!-- Process poem details file -->
+            <button id="process-details" class="btn btn-outline-primary">Process a poem details file <span class="material-icons">file_open</span></button>
+        </div>
+        <!-- Collection -->
+        <div class="my-4">
+            <h4>Collection</h4>
+            <!-- Display all poem collections -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#collections_table_div">Display all collections <span class="material-icons">menu_open</span></button>
+            <div id="collections_table_div" class="collapse">
+                <table id="collections_table" class="table table-sm table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th class="col-2">Collection Name</th>
+                            <th>Collection Summary</th>
+                            <th class="col-6">Poems</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Feature -->
+        <div class="my-4">
+            <h4>Feature</h4>
+            <!-- Display all features -->
+            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#features_table_div">Display all features <span class="material-icons">menu_open</span></button>
+            <div id="features_table_div" class="collapse">
+                <table id="features_table" class="table table-sm table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th><span class="material-icons">star</span></th>
+                            <th>Poem Title</th>
+                            <th>Feature Text</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Typewriter sounds -->
+    <div id="typewriter-sounds">
+        <audio id="typewriter-bell">
+            <source src="audio/typewriter_bell.mp3">
+        </audio>
+        <audio id="typewriter-key">
+            <source src="audio/typewriter_key.mp3">
+        </audio>
+        <audio id="typewriter-return">
+            <source src="audio/typewriter_return.mp3">
+        </audio>
+        <audio id="typewriter-space">
+            <source src="audio/typewriter_space.mp3">
+        </audio>
+    </div>
+
+    <!-- Javascript scripts -->
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./renderer.js"></script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+    <script src="./poem-details-tab.js"></script>
+</body>
+
+</html>

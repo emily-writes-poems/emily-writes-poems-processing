@@ -30,7 +30,7 @@ function createWindow () {
         },
     })
 
-    win.loadFile('index.html')
+    win.loadFile('index-react.html')
 }
 
 
