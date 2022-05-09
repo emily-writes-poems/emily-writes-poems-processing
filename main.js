@@ -9,13 +9,6 @@ var config = require('./config');
 
 var mongo_database = null
 
-// Connect to Mongo database
-MongoClient.connect(config.mongo_conn, (err, client) => {
-   if(err) throw err;
-   mongo_database = client.db(config.mongo_db);
-   console.log('finished connecting to Mongo DB')
-});
-
 
 // Load the app window
 function createWindow () {
@@ -23,10 +16,8 @@ function createWindow () {
         width: 1000,
         height: 750,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            enableRemoteModule: true,
-            nativeWindowOpen: true
+            nativeWindowOpen: true,
+            preload: path.join(__dirname, 'preload.js')
         },
     })
 
@@ -288,17 +279,20 @@ nativeTheme.on('updated', () => {
 
 // Start up the app
 app.whenReady().then(() => {
-    createWindow();
+    // Connect to Mongo database
+    MongoClient.connect(config.mongo_conn, (err, client) => {
+       if(err) throw err;
+       mongo_database = client.db(config.mongo_db);
+       console.log('finished connecting to Mongo DB')
 
-    if (nativeTheme.shouldUseDarkColors) {
-        app.dock.setIcon('./images/ewp-logo-alt.png');
-    } else {
-        app.dock.setIcon('./images/ewp-logo.png');
-    }
+       // Then create the window
+       createWindow();
 
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow()
-        }
-    })
+       // Set the dock icon
+       if (nativeTheme.shouldUseDarkColors) {
+           app.dock.setIcon('./images/ewp-logo-alt.png');
+       } else {
+           app.dock.setIcon('./images/ewp-logo.png');
+       }
+    });
 })
