@@ -8,8 +8,6 @@ const PoemDetailsTab = () => {
 
     return (
         <>
-        <h4>Poem & Details</h4>
-
         <div>
             <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#poems_table_div">Display all poems ({poems.length}) <span className="material-icons">menu_open</span></button>
 

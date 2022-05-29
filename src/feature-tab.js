@@ -7,13 +7,11 @@ const FeatureTab = () => {
     }, []);
 
     return (
-        <React.Fragment>
-        <h4>Feature</h4>
-
-        {/*<button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span class="material-icons">add_circle</span></button>
-        <div id="new_feature" class="collapse">
+        <>
+        <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span className="material-icons">add_circle</span></button>
+        <div id="new_feature" className="collapse">
             <h5>New feature</h5>
-            <form id="feature_form">
+            {/*<form id="feature_form">
                 <div class="row">
                     <div class="col">
                         <select class="form-select" id="feat_select-poem-dropdown"></select>
@@ -29,14 +27,14 @@ const FeatureTab = () => {
                 </div>
                 <input type="reset" class="btn btn-outline-primary">
                 <button id="create-feature" type="submit" class="btn btn-outline-primary">Submit</button>
-            </form>
+            </form>*/}
         </div>
-        <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#features_table_div">Display all features <span class="material-icons">menu_open</span></button>
-        <div id="features_table_div" class="collapse">
-            <table id="features_table" class="table table-sm table-bordered text-center">
+        <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#features_table_div">Display all features <span className="material-icons">menu_open</span></button>
+        <div id="features_table_div" className="collapse">
+            <table id="features_table" className="table table-sm table-bordered text-center">
                 <thead>
                     <tr>
-                        <th><span class="material-icons">star</span></th>
+                        <th><span className="material-icons">star</span></th>
                         <th>Poem Title</th>
                         <th>Feature Text</th>
                     </tr>
@@ -44,9 +42,7 @@ const FeatureTab = () => {
                 <tbody></tbody>
             </table>
         </div>
-        */}
-
-        </React.Fragment>
+        </>
     );
 }
 

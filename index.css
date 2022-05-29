@@ -86,13 +86,14 @@ body {
     margin-top: -0.1em;
 }
 
-h1 {
+#title {
     color: #5B58BB;
+    text-align: center;
 }
 
 
 h4 {
-    color: #5B58BB;
+    color: #8A88D2;
     margin: 0.75em 0;
 }
 
@@ -124,4 +125,26 @@ th {
 .collection-poems {
     list-style-position: inside;
     padding-left: 0;
+}
+
+.nav-pills {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3em;
+}
+
+.nav-pills .nav-link {
+    margin-right: 1.5em;
+    font-size: 1.25em;
+}
+
+.nav-pills .nav-link, .nav-link:hover, .nav-link:focus {
+    color: #5B58BB;
+    border: solid 0.05em #5B58BB;
+}
+
+.nav-pills .nav-link.active, .nav-pills .nav-item.show > .nav-link {
+    color: #F8F8FF;
+    background-color: #8A88D2;
+    border: solid 0.05em #5B58BB;
 }

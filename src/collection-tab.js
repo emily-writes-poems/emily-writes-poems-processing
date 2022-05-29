@@ -8,7 +8,6 @@ const CollectionTab = () => {
 
     return (
         <>
-        <h4>Collection</h4>
         <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#collections_table_div">Display all collections ({collections.length}) <span className="material-icons">menu_open</span></button>
 
         <div id="collections_table_div" className="collapse">
@@ -25,9 +24,9 @@ const CollectionTab = () => {
         </div>
 
         <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection <span className="material-icons">add_circle</span></button>
-        {/*<div id="new_collection" className="collapse">
+        <div id="new_collection" className="collapse">
             <h5>New collection</h5>
-            <form id="new_collection_form">
+            {/*<form id="new_collection_form">
                 <div className="row">
                     <div className="col">
                         <div className="form-floating form-field">
@@ -48,8 +47,8 @@ const CollectionTab = () => {
                 </div>
                 <input type="reset" className="btn btn-outline-primary">
                 <button id="create-collection" type="submit" className="btn btn-outline-primary">Submit</button>
-            </form>
-        </div>*/}
+            </form>*/}
+        </div>
         </>
     );
 }
