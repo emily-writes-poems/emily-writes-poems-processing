@@ -2,7 +2,7 @@ const CollectionTab = () => {
     const [ collections, setCollections ] = React.useState([]);
 
     React.useEffect(() => {
-        const res = window.electron.gatherData('gather-all-collections');
+        const res = window.electron.gatherCollections();
         setCollections(res);
     }, []);
 

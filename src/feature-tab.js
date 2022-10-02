@@ -2,7 +2,7 @@ const FeatureTab = () => {
     const [ features, setFeatures ] = React.useState([]);
 
     React.useEffect(() => {
-        const res = window.electron.gatherData('gather-all-features');
+        const res = window.electron.gatherFeatures();
         setFeatures(res);
     }, []);
 

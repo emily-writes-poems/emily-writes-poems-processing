@@ -2,9 +2,54 @@ const PoemDetailsTab = () => {
     const [ poems, setPoems ] = React.useState([]);
 
     React.useEffect(() => {
-        const res = window.electron.gatherData('gather-all-poems');
+        const res = window.electron.gatherPoems();
         setPoems(res);
     }, []);
+
+    const createPoemDetails = (event) => {
+        event.preventDefault();
+        console.log('clicked to create poem and/or details file!');
+        let poem_id = document.getElementById('poem-details_poem_id').value;
+        let poem_title = document.getElementById('poem-details_poem_title').value;
+        let poem_date = document.getElementById('poem_poem_date').value;
+        let poem_lines = document.getElementById('poem-details_poem_lines').value;
+        let poem_behind_title = document.getElementById('details_behind_title').value;
+        let poem_behind_poem = document.getElementById('details_behind_poem').value;
+
+        if (poem_id && poem_title && poem_date && poem_lines) {
+            console.log('create poem file!');
+            let ret = window.poem_details.createNewPoem(poem_id, poem_title, poem_date, poem_lines);
+            window.electron.sendCreateNotification(ret, "poem");
+        } else {
+            console.log('missing something to create a poem file')
+        }
+
+        if (poem_id && poem_title && poem_behind_title && poem_behind_poem && poem_lines) {
+            console.log('create details file!');
+            let ret = window.poem_details.createNewDetails(poem_id, poem_title, poem_behind_title, poem_behind_poem, poem_lines);
+            window.electron.sendCreateNotification(ret, "details");
+        } else {
+            console.log('missing something to create a poem details file')
+        }
+    }
+
+    const processPoem = () => {
+        console.log('process poem!');
+        let ret = window.poem_details.processPoem();
+        window.electron.sendProcessNotification(ret, "poem");
+    }
+
+    const deletePoem = () => {
+        console.log('delete poem!');
+        let ret = window.poem_details.deletePoem();
+        window.electron.sendDeleteNotification(ret, "poem");
+    }
+
+    const processDetails = () => {
+        console.log('process details!');
+        let ret = window.poem_details.processDetails();
+        window.electron.sendProcessNotification(ret, "details");
+    }
 
     return (
         <>
@@ -17,10 +62,18 @@ const PoemDetailsTab = () => {
                         <tr>
                             <th>Poem ID</th>
                             <th>Poem Title</th>
-                            <th>Date</th>
+                            <th>Poem Date</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        {poems.map((poem, index) =>
+                            <tr key={index}>
+                                <td>{poem.poem_id}</td>
+                                <td>{poem.poem_title}</td>
+                                <td>{poem.poem_date}</td>
+                            </tr>
+                        )}
+                    </tbody>
                 </table>
             </div>
 
@@ -30,7 +83,7 @@ const PoemDetailsTab = () => {
         <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new-poem-details">Create a new poem and/or details file <span className="material-icons">note_add</span></button>
         <div id="new-poem-details" className="collapse">
             <h5>New poem and/or details file</h5>
-            <form id="new-poem-details_form">
+            <form id="new-poem-details_form" onSubmit={createPoemDetails}>
                 <div className="row">
                     <div className="col">
                         <div className="form-floating form-field">
@@ -70,35 +123,14 @@ const PoemDetailsTab = () => {
         </div>
 
         <div>
-        <button id="process-poem" className="btn btn-outline-primary">Process a poem file <span className="material-icons">file_open</span></button>
+        <button id="process-poem" className="btn btn-outline-primary" onClick={processPoem}>Process a poem file <span className="material-icons">file_open</span></button>
 
-        <button id="delete-poem" className="btn btn-outline-primary">Remove a poem <span className="material-icons">file_open</span></button>
+        <button id="delete-poem" className="btn btn-outline-primary" onClick={deletePoem}>Remove a poem <span className="material-icons">file_open</span></button>
         </div>
 
         <div>
-        <button id="process-details" className="btn btn-outline-primary">Process a poem details file <span className="material-icons">file_open</span></button>
+        <button id="process-details" className="btn btn-outline-primary" onClick={processDetails}>Process a poem details file <span className="material-icons">file_open</span></button>
         </div>
-
-
-        {/* // Clear existing options for a full refresh
-        let dropdown = document.getElementById(dropdown_menu);
-        while (dropdown.lastChild) {
-            dropdown.removeChild(dropdown.lastChild);
-        }
-
-        let placeholder_option = document.createElement("option");
-        placeholder_option.selected = true;
-        placeholder_option.text = "--";
-        placeholder_option.value = "";
-        dropdown.add(placeholder_option);
-
-        for(let i = 0; i < ret.length; i++) {
-            let opt = document.createElement("option");
-            opt.text = ret[i][option_text];
-            opt.value = ret[i][option_value];
-            dropdown.add(opt);
-        }
-        */}
         </>
     );
 }

@@ -37,7 +37,7 @@ ipcMain.on('gather-all-collections', (event, args) => {
 
 // Gather list of poems
 ipcMain.on('gather-all-poems', (event, args) => {
-    mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, _id : 0} }).toArray((err, result) => {
+    mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, "poem_date" : 1, _id : 0} }).toArray((err, result) => {
         if(err) throw err;
         // console.log(result);
         event.returnValue = result;
@@ -94,7 +94,9 @@ ipcMain.on('create-new-details', (event, args) => {
         details_file.end();
     });
 
-    event.returnValue = file_name;
+    details_file.on('close', () => {
+        event.returnValue = file_name;
+    })
 })
 
 
@@ -103,7 +105,7 @@ ipcMain.on('create-new-feature', (event, args) => {
     let [poem_id, poem_title, feature_text, set_current_feature] = args;
 
     if (set_current_feature == true) { // Want to set this new feature as the current feature, so unset any existing current feature
-        invalidateFeature();
+        unsetCurrentFeature();
     }
     // Insert into DB
     mongo_database.collection(config.mongo_feat_coll).insertOne( { "poem_id" : poem_id, "poem_title" : poem_title, "featured_text" : feature_text, "currently_featured" : set_current_feature }, (err, result) => {
@@ -131,9 +133,9 @@ ipcMain.on('create-new-collection', (event, args) => {
 
 // Show open file dialog:
 // If a file was chosen, run the specified command via shell script
-ipcMain.on('open-file-dialog', (event, [path, isShellCommand, command, args]) => {
+ipcMain.on('open-file-dialog', (event, [folder_path, isShellCommand, command, args]) => {
     dialog.showOpenDialog({
-        defaultPath: path,
+        defaultPath: folder_path,
         properties: ['openFile']
     }).then(selected_file => {
         if (!selected_file.canceled) {
@@ -145,12 +147,23 @@ ipcMain.on('open-file-dialog', (event, [path, isShellCommand, command, args]) =>
                     event.returnValue = -1;
                 }
             } else if (command == 'delete-poem') {  // Delete poem
-                let ret = deletePoem(selected_file.filePaths[0]);
-                if (ret == 0) {
-                    event.returnValue = selected_file.filePaths;
-                } else {
-                    event.returnValue = -1;
-                }
+                let poem_file = selected_file.filePaths[0];
+                let poem_id = path.basename(poem_file, '.txt');
+                let options = {
+                    buttons: ["Yes" , "No"],
+                    message: 'Are you sure you want to delete this poem? poem_id: ' + poem_id,
+                    type: 'question'
+                };
+
+                dialog.showMessageBox(options).then((response) => {
+                    if (response.response == 0) {  // confirmed to delete
+                        let ret = runShellCommand(createCommand(config.remove_poem_script, [poem_file]));
+                        event.returnValue = poem_id;
+                    } else {  // canceled deletion
+                        console.log('Canceled poem deletion');
+                        event.returnValue = 1;
+                    }
+                });
             } else {
                 event.returnValue = -1;
             }
@@ -181,28 +194,6 @@ function runShellCommand(command) {
         console.log(err.stderr.toString());
         return -1;
     }
-}
-
-
-// Handle poem deletion
-function deletePoem(poem_file) {
-    let poem_id = path.basename(poem_file, '.txt');
-
-    let options = {
-        buttons: ["Yes" , "No"],
-        message: 'Are you sure you want to delete this poem? poem_id: ' + poem_id,
-        type: 'question'
-    }
-
-    dialog.showMessageBox(options).then((response) => {
-        if (response.response == 0) {  // confirmed to delete
-            let ret = runShellCommand(createCommand(config.remove_poem_script, [poem_file]));
-            return ret;
-        } else {  // canceled deletion
-            console.log('Canceled poem deletion');
-            return -1;
-        }
-    });
 }
 
 
