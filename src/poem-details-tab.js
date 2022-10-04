@@ -2,7 +2,7 @@ const PoemDetailsTab = () => {
     const [ poems, setPoems ] = React.useState([]);
 
     React.useEffect(() => {
-        const res = window.electron.gatherPoems();
+        const res = window.electron.gatherPoems_poemslist();
         setPoems(res);
     }, []);
 
@@ -19,7 +19,7 @@ const PoemDetailsTab = () => {
         if (poem_id && poem_title && poem_date && poem_lines) {
             console.log('create poem file!');
             let ret = window.poem_details.createNewPoem(poem_id, poem_title, poem_date, poem_lines);
-            window.electron.sendCreateNotification(ret, "poem");
+            window.electron.sendCreateNotification(ret, "poem file");
         } else {
             console.log('missing something to create a poem file')
         }
@@ -27,7 +27,7 @@ const PoemDetailsTab = () => {
         if (poem_id && poem_title && poem_behind_title && poem_behind_poem && poem_lines) {
             console.log('create details file!');
             let ret = window.poem_details.createNewDetails(poem_id, poem_title, poem_behind_title, poem_behind_poem, poem_lines);
-            window.electron.sendCreateNotification(ret, "details");
+            window.electron.sendCreateNotification(ret, "details file");
         } else {
             console.log('missing something to create a poem details file')
         }

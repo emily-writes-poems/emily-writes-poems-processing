@@ -29,7 +29,6 @@ function createWindow () {
 ipcMain.on('gather-all-collections', (event, args) => {
     mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: { _id : 0 } }).toArray((err, result) => {
         if(err) throw err;
-        // console.log(result);
         event.returnValue = result;
     });
 });
@@ -37,11 +36,22 @@ ipcMain.on('gather-all-collections', (event, args) => {
 
 // Gather list of poems
 ipcMain.on('gather-all-poems', (event, args) => {
-    mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, "poem_date" : 1, _id : 0} }).toArray((err, result) => {
-        if(err) throw err;
-        // console.log(result);
-        event.returnValue = result;
-    })
+    let t = args[0];
+    if(t=='poemslist') {
+        mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, "poem_date" : 1, _id : 0} }).toArray((err, result) => {
+            if(err) throw err;
+            event.returnValue = result;
+        });
+    } else if(t=='features') {
+        mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, _id : 0} }).toArray((err, result) => {
+            if(err) throw err;
+            event.returnValue = result;
+        });
+    } else {
+        console.log('gather-all-poems received an invalid argument: ' + t);
+        event.returnValue = -1;
+    }
+
 });
 
 
@@ -114,7 +124,7 @@ ipcMain.on('create-new-feature', (event, args) => {
         if(set_current_feature) {
             event.returnValue = "Set as current feature: " + poem_title;
         } else {
-            event.returnValue = "Not set as current feature.";
+            event.returnValue = "Not set as current feature: " + poem_title;
         }
     } );
 });
@@ -196,6 +206,17 @@ function runShellCommand(command) {
     }
 }
 
+
+// Clear any currently featured poems
+function unsetCurrentFeature() {
+    mongo_database.collection(config.mongo_feat_coll).updateMany( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, res) => {
+        if(err) { throw err; }
+        else {
+            console.log("Successfully unset current feature.");
+            return;
+        }
+    });
+}
 
 // Handle editing current feature
 ipcMain.on('edit-current-feature', (event, args) => {

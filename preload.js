@@ -2,14 +2,17 @@ const { contextBridge, ipcRenderer } = require('electron');
 var config = require('./config');
 
 contextBridge.exposeInMainWorld('electron', {
-    gatherPoems: () => {
-        return ipcRenderer.sendSync('gather-all-poems');
+    gatherPoems_poemslist: () => {
+        return ipcRenderer.sendSync('gather-all-poems', ['poemslist']);
     },
     gatherCollections: () => {
         return ipcRenderer.sendSync('gather-all-collections');
     },
     gatherFeatures: () => {
         return ipcRenderer.sendSync('gather-all-features');
+    },
+    gatherPoems_features: () => {
+        return ipcRenderer.sendSync('gather-all-poems', ['features']);
     },
     sendProcessNotification: (ret, file_type) => {
         if(ret==1) {
@@ -20,11 +23,11 @@ contextBridge.exposeInMainWorld('electron', {
             new Notification(file_type + ' processed', { body : ret } );
         }
     },
-    sendCreateNotification: (ret, file_type) => {
+    sendCreateNotification: (ret, t) => {
         if(ret!=1) {
-            new Notification(file_type + ' file created', { body : ret } );
+            new Notification(t + ' created', { body : ret } );
         } else {
-            new Notification('Error creating new ' + file_type + ' file');
+            new Notification('Error creating new ' + file_type);
         }
     },
     sendDeleteNotification: (ret, t) => {
@@ -34,7 +37,7 @@ contextBridge.exposeInMainWorld('electron', {
             new Notification('Successfully deleted ' + t, { body : ret } );
         }
     }
-})
+});
 
 
 contextBridge.exposeInMainWorld('poem_details', {
@@ -53,4 +56,10 @@ contextBridge.exposeInMainWorld('poem_details', {
     processDetails: () => {
         return ipcRenderer.sendSync('open-file-dialog', [config.details_folder, true, config.process_details_script]);
     }
-})
+});
+
+contextBridge.exposeInMainWorld('features', {
+    createNewFeature: (poem_id, poem_title, feature_text, set_current_feature) => {
+        return ipcRenderer.sendSync('create-new-feature', [poem_id, poem_title, feature_text, set_current_feature]);
+    }
+});
