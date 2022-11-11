@@ -228,23 +228,20 @@ ipcMain.on('edit-current-feature', (event, args) => {
     }
 
     dialog.showMessageBox(options).then((response) => {
-        if (response.response == 0) {  // confirmed
+        if (response.response == 0) {  // confirmed, unset the current feature
             mongo_database.collection(config.mongo_feat_coll).updateMany( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, res) => {
                 if(err) { event.returnValue = -1; }
                 else {
-                    // console.log("Successfully unset current feature.");
-                    if(!args[2]) {
+                    if(!args[2]) {  // if this wasn't the previously set feature, set it as the current feature
                         mongo_database.collection(config.mongo_feat_coll).updateOne( { "poem_id" : args[0], "featured_text" : args[1] }, { "$set" : { "currently_featured" : true } }, (err, res) => {
                             if(err) { event.returnValue = -1; }
                             else {
-                                // console.log("Successfully set current feature.");
                                 event.returnValue = 0;
                             }
                         } );
 
-                    } else {
-                        // console.log('Not setting any feature.');
-                        event.returnValue = 0;
+                    } else {  // this means we removed the previously set feature, and that's all we want to do
+                        event.returnValue = 1;
                     }
                 }
             })

@@ -36,6 +36,15 @@ contextBridge.exposeInMainWorld('electron', {
         } else {
             new Notification('Successfully deleted ' + t, { body : ret } );
         }
+    },
+    sendEditFeatureNotification: (ret, poem_id) => {
+        if(ret==0) {
+            new Notification('Successfully set current feature', { body: "For poem: " + poem_id });
+        } else if(ret==1) {
+            new Notification('Successfully removed current feature.');
+        } else {
+            new Notification('Error editing current feature', { body : "For poem: " + poem_id } );
+        }
     }
 });
 
@@ -59,7 +68,10 @@ contextBridge.exposeInMainWorld('poem_details', {
 });
 
 contextBridge.exposeInMainWorld('features', {
-    createNewFeature: (poem_id, poem_title, feature_text, set_current_feature) => {
-        return ipcRenderer.sendSync('create-new-feature', [poem_id, poem_title, feature_text, set_current_feature]);
+    createNewFeature: (poem_id, poem_title, featured_text, set_current_feature) => {
+        return ipcRenderer.sendSync('create-new-feature', [poem_id, poem_title, featured_text, set_current_feature]);
+    },
+    editCurrentFeature: (poem_id, featured_text, currently_featured) => {
+        return ipcRenderer.sendSync('edit-current-feature', [poem_id, featured_text, currently_featured]);
     }
 });

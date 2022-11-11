@@ -12,19 +12,24 @@ const FeatureTab = () => {
         setPoems(res);
     }, []);
 
-
-
     const createNewFeature = (event) => {
         event.preventDefault();
         console.log('clicked to create a new feature!');
         let selected_poem = document.getElementById('feat_select-poem-dropdown');
         let poem_id = selected_poem.options[selected_poem.selectedIndex].text;
         let poem_title = selected_poem.options[selected_poem.selectedIndex].value;
-        let feature_text = document.getElementById('feat_feature_text').value;
+        let featured_text = document.getElementById('feat_feature_text').value;
         let set_current_feature = document.getElementById('feat_set_current_feature').checked;
 
-        let ret = window.features.createNewFeature(poem_id, poem_title, feature_text, set_current_feature);
+        let ret = window.features.createNewFeature(poem_id, poem_title, featured_text, set_current_feature);
         window.electron.sendCreateNotification(ret, "feature");
+    }
+
+    const editCurrentFeature = (poem_id, featured_text, currently_featured) => {
+        event.preventDefault();
+        console.log('clicked to set or unset current feature!');
+        let ret = window.features.editCurrentFeature(poem_id, featured_text, currently_featured);
+        window.electron.sendEditFeatureNotification(ret, poem_id);
     }
 
     return (
@@ -74,7 +79,15 @@ const FeatureTab = () => {
                         <th>Feature Text</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    {features.map((feat, index) =>
+                        <tr key={index}>
+                            <td>{feat.currently_featured ? '✔' : ''}</td>
+                            <td>{feat.poem_title} <span className="small-option" onClick={() => editCurrentFeature(feat.poem_id, feat.featured_text, feat.currently_featured)}>{feat.currently_featured ? '(unset)' : '(set)'}</span></td>
+                            <td>{feat.featured_text}</td>
+                        </tr>
+                    )}
+                </tbody>
             </table>
         </div>
         </>
