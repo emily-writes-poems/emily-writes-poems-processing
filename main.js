@@ -21,7 +21,7 @@ function createWindow () {
         },
     })
 
-    win.loadFile('index-react.html')
+    win.loadFile('index.html')
 }
 
 
@@ -36,22 +36,10 @@ ipcMain.on('gather-all-collections', (event, args) => {
 
 // Gather list of poems
 ipcMain.on('gather-all-poems', (event, args) => {
-    let t = args[0];
-    if(t=='poemslist') {
-        mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, "poem_date" : 1, _id : 0} }).toArray((err, result) => {
-            if(err) throw err;
-            event.returnValue = result;
-        });
-    } else if(t=='features') {
-        mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, _id : 0} }).toArray((err, result) => {
-            if(err) throw err;
-            event.returnValue = result;
-        });
-    } else {
-        console.log('gather-all-poems received an invalid argument: ' + t);
-        event.returnValue = -1;
-    }
-
+    mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {_id : 0} }).toArray((err, result) => {
+        if(err) throw err;
+        event.returnValue = result;
+    });
 });
 
 

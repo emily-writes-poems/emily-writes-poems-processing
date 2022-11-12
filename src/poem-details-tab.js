@@ -1,10 +1,4 @@
-const PoemDetailsTab = () => {
-    const [ poems, setPoems ] = React.useState([]);
-
-    React.useEffect(() => {
-        const res = window.electron.gatherPoems_poemslist();
-        setPoems(res);
-    }, []);
+const PoemDetailsTab = ({poems, refreshPoemsList}) => {
 
     const createPoemDetails = (event) => {
         event.preventDefault();
@@ -37,12 +31,14 @@ const PoemDetailsTab = () => {
         console.log('process poem!');
         let ret = window.poem_details.processPoem();
         window.electron.sendProcessNotification(ret, "poem");
+        refreshPoemsList();
     }
 
     const deletePoem = () => {
         console.log('delete poem!');
         let ret = window.poem_details.deletePoem();
         window.electron.sendDeleteNotification(ret, "poem");
+        refreshPoemsList();
     }
 
     const processDetails = () => {

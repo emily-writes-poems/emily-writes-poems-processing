@@ -2,17 +2,14 @@ const { contextBridge, ipcRenderer } = require('electron');
 var config = require('./config');
 
 contextBridge.exposeInMainWorld('electron', {
-    gatherPoems_poemslist: () => {
-        return ipcRenderer.sendSync('gather-all-poems', ['poemslist']);
+    gatherPoems: () => {
+        return ipcRenderer.sendSync('gather-all-poems');
     },
     gatherCollections: () => {
         return ipcRenderer.sendSync('gather-all-collections');
     },
     gatherFeatures: () => {
         return ipcRenderer.sendSync('gather-all-features');
-    },
-    gatherPoems_features: () => {
-        return ipcRenderer.sendSync('gather-all-poems', ['features']);
     },
     sendProcessNotification: (ret, file_type) => {
         if(ret==1) {

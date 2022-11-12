@@ -1,15 +1,9 @@
-const FeatureTab = () => {
+const FeatureTab = ({poems}) => {
     const [ features, setFeatures ] = React.useState([]);
-    const [ poems, setPoems ] = React.useState([]);
 
     React.useEffect(() => {
         const res = window.electron.gatherFeatures();
         setFeatures(res);
-    }, []);
-
-    React.useEffect(() => {
-        const res = window.electron.gatherPoems_features();
-        setPoems(res);
     }, []);
 
     const createNewFeature = (event) => {
