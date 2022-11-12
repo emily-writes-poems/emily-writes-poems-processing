@@ -1,10 +1,11 @@
 const FeatureTab = ({poems}) => {
     const [ features, setFeatures ] = React.useState([]);
+    const [ refreshFeatures, setRefreshFeatures ] = React.useState(false);
 
     React.useEffect(() => {
         const res = window.electron.gatherFeatures();
         setFeatures(res);
-    }, []);
+    }, [refreshFeatures]);
 
     const createNewFeature = (event) => {
         event.preventDefault();
@@ -17,6 +18,7 @@ const FeatureTab = ({poems}) => {
 
         let ret = window.features.createNewFeature(poem_id, poem_title, featured_text, set_current_feature);
         window.electron.sendCreateNotification(ret, "feature");
+        setRefreshFeatures(!refreshFeatures);
     }
 
     const editCurrentFeature = (poem_id, featured_text, currently_featured) => {
@@ -24,6 +26,7 @@ const FeatureTab = ({poems}) => {
         console.log('clicked to set or unset current feature!');
         let ret = window.features.editCurrentFeature(poem_id, featured_text, currently_featured);
         window.electron.sendEditFeatureNotification(ret, poem_id);
+        setRefreshFeatures(!refreshFeatures);
     }
 
     return (
