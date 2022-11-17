@@ -257,7 +257,7 @@ ipcMain.on('delete-feature', (event, args) => {
                 event.returnValue = 0;
             })
         } else {
-            event.returnValue = -1;
+            event.returnValue = 1;
         }
     })
 })

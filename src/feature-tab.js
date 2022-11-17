@@ -29,6 +29,14 @@ const FeatureTab = ({poems}) => {
         setRefreshFeatures(!refreshFeatures);
     }
 
+    const deleteFeature = (poem_id, featured_text) => {
+        event.preventDefault();
+        console.log('clicked to delete feature!');
+        let ret = window.features.deleteFeature(poem_id, featured_text);
+        window.electron.sendDeleteNotification(ret, "feature");
+        setRefreshFeatures(!refreshFeatures);
+    }
+
     return (
         <>
         <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span className="material-icons">add_circle</span></button>
@@ -79,8 +87,14 @@ const FeatureTab = ({poems}) => {
                 <tbody>
                     {features.map((feat, index) =>
                         <tr key={index}>
-                            <td>{feat.currently_featured ? '✔' : ''}</td>
-                            <td>{feat.poem_title} <span className="small-option" onClick={() => editCurrentFeature(feat.poem_id, feat.featured_text, feat.currently_featured)}>{feat.currently_featured ? '(unset)' : '(set)'}</span></td>
+                            <td>
+                                {feat.currently_featured ? '✔' : ''}
+                                <span className="small-option" onClick={() => editCurrentFeature(feat.poem_id, feat.featured_text, feat.currently_featured)}>{feat.currently_featured ? '(unset)' : '(set)'}</span>
+                            </td>
+                            <td>
+                                {feat.poem_title}
+                                <span className="small-option" onClick={() => deleteFeature(feat.poem_id, feat.featured_text)}>(delete)</span>
+                            </td>
                             <td>{feat.featured_text}</td>
                         </tr>
                     )}

@@ -30,6 +30,10 @@ contextBridge.exposeInMainWorld('electron', {
     sendDeleteNotification: (ret, t) => {
         if(ret==1) {
             new Notification(t + ' not deleted', { body : 'No ' + t + ' was chosen to process' } );
+        } else if (ret==-1) {
+            new Notification(t + ' not deleted', { body : 'An error occurred' } );
+        } else if (ret==0) {
+            new Notification('Successfully deleted ' + t)
         } else {
             new Notification('Successfully deleted ' + t, { body : ret } );
         }
@@ -70,5 +74,8 @@ contextBridge.exposeInMainWorld('features', {
     },
     editCurrentFeature: (poem_id, featured_text, currently_featured) => {
         return ipcRenderer.sendSync('edit-current-feature', [poem_id, featured_text, currently_featured]);
+    },
+    deleteFeature: (poem_id, featured_text) => {
+        return ipcRenderer.sendSync('delete-feature', [poem_id, featured_text]);
     }
 });

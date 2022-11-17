@@ -119,6 +119,7 @@ th {
     font-size: 0.75em;
     cursor: pointer;
     color: #817E92;
+    display: block;
 }
 
 .collection-poems {
