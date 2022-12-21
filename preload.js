@@ -11,13 +11,13 @@ contextBridge.exposeInMainWorld('electron', {
     gatherFeatures: () => {
         return ipcRenderer.sendSync('gather-all-features');
     },
-    sendProcessNotification: (ret, file_type) => {
+    sendProcessNotification: (ret, type) => {
         if(ret==1) {
-            new Notification(file_type + ' not processed', { body : 'No ' + file_type + ' file was chosen to process' } );
+            new Notification(type + ' not processed', { body : 'No ' + type + ' was chosen to process' } );
         } else if(ret==-1) {
-            new Notification(file_type + ' not processed', { body : 'An error occurred' } );
+            new Notification(type + ' not processed', { body : 'An error occurred' } );
         } else {
-            new Notification(file_type + ' processed', { body : ret } );
+            new Notification(type + ' processed', { body : ret } );
         }
     },
     sendCreateNotification: (ret, t) => {
@@ -65,6 +65,15 @@ contextBridge.exposeInMainWorld('poem_details', {
     },
     processDetails: () => {
         return ipcRenderer.sendSync('open-file-dialog', [config.details_folder, true, config.process_details_script]);
+    }
+});
+
+contextBridge.exposeInMainWorld('collections', {
+    createNewCollection: (collection_id, collection_name, collection_summary) => {
+        return ipcRenderer.sendSync('create-new-collection', [collection_id, collection_name, collection_summary]);
+    },
+    processWordcloud: (collection_id) => {
+        return ipcRenderer.sendSync('process-wordcloud', collection_id);
     }
 });
 

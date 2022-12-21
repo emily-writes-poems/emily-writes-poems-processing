@@ -25,18 +25,18 @@ function createWindow () {
 }
 
 
-// Gather list of poem collections
-ipcMain.on('gather-all-collections', (event, args) => {
-    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: { _id : 0 } }).toArray((err, result) => {
+// Gather list of poems
+ipcMain.on('gather-all-poems', (event, args) => {
+    mongo_database.collection(config.mongo_poems_coll).find({}, { sort: ["poem_id", 1], projection: {_id : 0} }).toArray((err, result) => {
         if(err) throw err;
         event.returnValue = result;
     });
 });
 
 
-// Gather list of poems
-ipcMain.on('gather-all-poems', (event, args) => {
-    mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {_id : 0} }).toArray((err, result) => {
+// Gather list of poem collections
+ipcMain.on('gather-all-collections', (event, args) => {
+    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: { _id : 0 } }).toArray((err, result) => {
         if(err) throw err;
         event.returnValue = result;
     });
@@ -98,6 +98,17 @@ ipcMain.on('create-new-details', (event, args) => {
 })
 
 
+// Create new poem collection from form fields
+ipcMain.on('create-new-collection', (event, args) => {
+    // Insert into DB
+    mongo_database.collection(config.mongo_poemcolls_coll).insertOne( { "collection_id" : args[0], "collection_name" : args[1], "collection_summary" : args[2] }, (err, result) => {
+        if(err) throw err;
+        console.log("Inserted new collection: " + args);
+        event.returnValue = args[1];
+    } );
+});
+
+
 // Create new feature from form fields
 ipcMain.on('create-new-feature', (event, args) => {
     let [poem_id, poem_title, feature_text, set_current_feature] = args;
@@ -114,17 +125,6 @@ ipcMain.on('create-new-feature', (event, args) => {
         } else {
             event.returnValue = "Not set as current feature: " + poem_title;
         }
-    } );
-});
-
-
-// Create new poem collection from form fields
-ipcMain.on('create-new-collection', (event, args) => {
-    // Insert into DB
-    mongo_database.collection(config.mongo_poemcolls_coll).insertOne( { "collection_id" : args[0], "collection_name" : args[1], "collection_summary" : args[2] }, (err, result) => {
-        if(err) throw err;
-        console.log("Inserted new collection: " + args);
-        event.returnValue = args[1];
     } );
 });
 
@@ -193,6 +193,17 @@ function runShellCommand(command) {
         return -1;
     }
 }
+
+
+// Process wordcloud for collection
+ipcMain.on('process-wordcloud', (event, collection_id) => {
+    let ret = runShellCommand(createCommand(config.process_wordcloud_script, [collection_id]));
+    if (ret == 0) {
+        event.returnValue = collection_id;
+    } else { // Some error occured when running command
+        event.returnValue = -1;
+    }
+});
 
 
 // Clear any currently featured poems

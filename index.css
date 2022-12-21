@@ -74,7 +74,8 @@
 }
 
 body {
-    font-family: Merriweather;
+    font-family: 'Merriweather';
+    font-size: 16px;
 }
 
 .btn {
@@ -116,15 +117,19 @@ th {
 
 .small-option {
     text-decoration: underline;
-    font-size: 0.75em;
+    font-size: 0.8em;
     cursor: pointer;
     color: #817E92;
     display: block;
 }
 
 .collection-poems {
-    list-style-position: inside;
+    list-style: none;
     padding-left: 0;
+}
+
+.wordcloud {
+    margin: 0;
 }
 
 .nav-pills {
