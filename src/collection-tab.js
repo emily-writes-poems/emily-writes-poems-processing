@@ -47,16 +47,14 @@ const CollectionTab = () => {
                             <td className="align-middle">{coll.collection_name}</td>
                             <td className="align-middle">{coll.collection_summary}</td>
                             <td className="align-middle">
-                                <ul className="collection-poems">
-                                    {coll.poem_titles && coll.poem_titles.map((poem, index) =>
-                                        <li key={index}>- {poem}</li>
-                                    )}
-                                </ul>
+                                {coll.poem_titles &&
+                                    coll.poem_titles.map((poem, index) => <p key={index} className="list-spacing">- {poem}</p>)
+                                }
                             </td>
                             <td className="align-middle">
                                 <span className="small-option" onClick={() => processWordcloud(coll.collection_id)}>(process)</span>
                                 {coll.wordcloud &&
-                                    coll.wordcloud.map((i, idx) => <p key={idx} className="wordcloud">- {i.text} : {i.value}</p>)
+                                    coll.wordcloud.map((i, idx) => <p key={idx} className="list-spacing">- {i.text} : {i.value}</p>)
                                 }
                             </td>
                         </tr>

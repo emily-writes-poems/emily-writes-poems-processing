@@ -93,6 +93,7 @@ const FeatureTab = ({poems}) => {
                             </td>
                             <td>
                                 {feat.poem_title}
+                                <br/>
                                 <span className="small-option" onClick={() => deleteFeature(feat.poem_id, feat.featured_text)}>(delete)</span>
                             </td>
                             <td>{feat.featured_text}</td>

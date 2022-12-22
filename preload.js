@@ -51,6 +51,11 @@ contextBridge.exposeInMainWorld('electron', {
 
 
 contextBridge.exposeInMainWorld('poem_details', {
+    openFile: (type, poem) => {
+        var folder = type == 'poem' ? config.poems_folder : config.details_folder;
+        var suffix = type == 'poem' ? '.txt' : '_ANNOTATED.txt';
+        return ipcRenderer.send('open-file', [folder, poem, suffix]);
+    },
     createNewPoem: (poem_id, poem_title, poem_date, poem_lines) => {
         return ipcRenderer.sendSync('create-new-poem', [poem_id, poem_title, poem_date, poem_lines]);
     },

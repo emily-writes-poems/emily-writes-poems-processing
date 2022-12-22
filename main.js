@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron')
+const { app, BrowserWindow, ipcMain, nativeTheme, shell } = require('electron')
 const dialog = require('electron').dialog
 const { execSync } = require('child_process')
 const { MongoClient } = require('mongodb');
@@ -49,6 +49,12 @@ ipcMain.on('gather-all-features', (event, args) => {
         if(err) throw err;
         event.returnValue = result;
     })
+});
+
+
+// Open file from path
+ipcMain.on('open-file', (event, args) => {
+    shell.openPath(args[0] + args[1] + args[2]);
 });
 
 

@@ -1,5 +1,9 @@
 const PoemDetailsTab = ({poems, refreshPoemsList}) => {
 
+    const openFile = (type, poem) => {
+        window.poem_details.openFile(type, poem);
+    }
+
     const createPoemDetails = (event) => {
         event.preventDefault();
         console.log('clicked to create poem and/or details file!');
@@ -64,7 +68,12 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                     <tbody>
                         {poems.map((poem, index) =>
                             <tr key={index}>
-                                <td>{poem.poem_id}</td>
+                                <td>
+                                    {poem.poem_id}
+                                    <br/>
+                                    <div className="small-option" onClick={() => openFile("poem", poem.poem_id)}>(open poem file)</div> &nbsp;
+                                    <div className="small-option" onClick={() => openFile("details", poem.poem_id)}>(open details file)</div>
+                                </td>
                                 <td>{poem.poem_title}</td>
                                 <td>{poem.poem_date}</td>
                             </tr>
