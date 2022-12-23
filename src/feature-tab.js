@@ -39,68 +39,74 @@ const FeatureTab = ({poems}) => {
 
     return (
         <>
-        <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span className="material-icons">add_circle</span></button>
-        <div id="new_feature" className="collapse">
-            <h5>New feature</h5>
-            <form id="feature_form" onSubmit={createNewFeature}>
-                <div className="row">
-                    <div className="col">
-                        <div className="form-field">
-                            <select className="form-select" id="feat_select-poem-dropdown" defaultValue={""}>
-                                <option value="" disabled>Select a poem</option>
-                                {poems.map((poem, index) =>
-                                    <option key={index} value={poem.poem_id}>
-                                        {poem.poem_title}
-                                    </option>
-                                )}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col">
-                        <div className="form-floating form-field">
-                            <textarea id="feat_feature_text" style={{height: "100px"}} className="form-control" placeholder="Feature Text" required></textarea>
-                            <label htmlFor="feat_feature_text">Feature Text</label>
-                        </div>
-                    </div>
-                </div>
+        <div id="feature" className="text-center">
+            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#features_table_div">Display all features <span className="material-icons">menu_open</span></button>
+            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span className="material-icons">add_circle</span></button>
 
-                <div className="form-field form-check">
-                    <input className="form-check-input" type="checkbox" id="feat_set_current_feature" />
-                    <label className="form-check-label" htmlFor="feat_set_current_feature">Set as current feature</label>
-                </div>
-                <input type="reset" className="btn btn-outline-primary" />
-                <button id="create-feature" type="submit" className="btn btn-outline-primary">Submit</button>
-            </form>
-        </div>
-        <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#features_table_div">Display all features <span className="material-icons">menu_open</span></button>
-        <div id="features_table_div" className="collapse">
-            <table id="features_table" className="table table-sm table-bordered text-center">
-                <thead>
-                    <tr>
-                        <th><span className="material-icons">star</span></th>
-                        <th>Poem Title</th>
-                        <th>Feature Text</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {features.map((feat, index) =>
-                        <tr key={index}>
-                            <td>
-                                {feat.currently_featured ? '✔' : ''}
-                                <span className="small-option" onClick={() => editCurrentFeature(feat.poem_id, feat.featured_text, feat.currently_featured)}>{feat.currently_featured ? '(unset)' : '(set)'}</span>
-                            </td>
-                            <td>
-                                {feat.poem_title}
-                                <br/>
-                                <span className="small-option" onClick={() => deleteFeature(feat.poem_id, feat.featured_text)}>(delete)</span>
-                            </td>
-                            <td>{feat.featured_text}</td>
+            <div id="features_table_div" className="collapse" data-bs-parent="#feature">
+                <table id="features_table" className="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th><span className="material-icons">star</span></th>
+                            <th>Poem Title</th>
+                            <th>Feature Text</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {features.map((feat, index) =>
+                            <tr key={index}>
+                                <td>
+                                    {feat.currently_featured ? '✔' : ''}
+                                    <span className="small-option" onClick={() => editCurrentFeature(feat.poem_id, feat.featured_text, feat.currently_featured)}>{feat.currently_featured ? '(unset)' : '(set)'}</span>
+                                </td>
+                                <td>
+                                    {feat.poem_title}
+                                    <br/>
+                                    <span className="small-option" onClick={() => deleteFeature(feat.poem_id, feat.featured_text)}>(delete)</span>
+                                </td>
+                                <td>{feat.featured_text}</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="new_feature" className="collapse" data-bs-parent="#feature">
+                <h5>New feature</h5>
+                <form id="feature_form" onSubmit={createNewFeature}>
+                    <div className="row">
+                        <div className="col">
+                            <div className="form-field">
+                                <select className="form-select" id="feat_select-poem-dropdown" defaultValue={""}>
+                                    <option value="" disabled>Select a poem</option>
+                                    {poems.map((poem, index) =>
+                                        <option key={index} value={poem.poem_id}>
+                                            {poem.poem_title}
+                                        </option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col">
+                            <div className="form-floating form-field">
+                                <textarea id="feat_feature_text" style={{height: "100px"}} className="form-control" placeholder="Feature Text" required></textarea>
+                                <label htmlFor="feat_feature_text">Feature Text</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="checkbox" id="feat_set_current_feature" />
+                        <label className="form-check-label" htmlFor="feat_set_current_feature">Set as current feature</label>
+                    </div>
+                    <div className="col">
+                        <input type="reset" className="btn btn-outline-primary" />
+                        <button id="create-feature" type="submit" className="btn btn-outline-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
         </div>
         </>
     );

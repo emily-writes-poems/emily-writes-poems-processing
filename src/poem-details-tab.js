@@ -53,11 +53,17 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
 
     return (
         <>
-        <div>
+        <div id="poem-details" className="text-center">
             <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#poems_table_div">Display all poems ({poems.length}) <span className="material-icons">menu_open</span></button>
+            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new-poem-details">Create a new poem and/or details file <span className="material-icons">note_add</span></button>
+            <br />
+            <button id="process-poem" className="btn btn-outline-primary" onClick={processPoem}>Process a poem file <span className="material-icons">file_open</span></button>
+            <button id="delete-poem" className="btn btn-outline-primary" onClick={deletePoem}>Remove a poem <span className="material-icons">file_open</span></button>
+            <button id="process-details" className="btn btn-outline-primary" onClick={processDetails}>Process a poem details file <span className="material-icons">file_open</span></button>
 
-            <div id="poems_table_div" className="collapse">
-                <table id="poems_table" className="table table-sm table-bordered text-center">
+            <div id="poems_table_div" className="collapse" data-bs-parent="#poem-details">
+                <h5>Poems</h5>
+                <table id="poems_table" className="table table-sm table-bordered">
                     <thead>
                         <tr>
                             <th>Poem ID</th>
@@ -82,59 +88,45 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                 </table>
             </div>
 
-        </div>
-
-        <div>
-        <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new-poem-details">Create a new poem and/or details file <span className="material-icons">note_add</span></button>
-        <div id="new-poem-details" className="collapse">
-            <h5>New poem and/or details file</h5>
-            <form id="new-poem-details_form" onSubmit={createPoemDetails}>
-                <div className="row">
-                    <div className="col">
-                        <div className="form-floating form-field">
-                            <input id="poem-details_poem_id" type="text" className="form-control" placeholder="Poem ID" required />
-                            <label htmlFor="poem-details_poem_id">Poem ID</label>
+            <div id="new-poem-details" className="collapse" data-bs-parent="#poem-details">
+                <h5>New poem and/or details file</h5>
+                <form id="new-poem-details_form" onSubmit={createPoemDetails}>
+                    <div className="row">
+                        <div className="col">
+                            <div className="form-floating form-field">
+                                <input id="poem-details_poem_id" type="text" className="form-control" placeholder="Poem ID" required />
+                                <label htmlFor="poem-details_poem_id">Poem ID</label>
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="form-floating form-field">
+                                <input id="poem-details_poem_title" type="text" className="form-control" placeholder="Poem Title" required />
+                                <label htmlFor="poem-details_poem_title">Poem Title</label>
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="form-floating form-field">
+                                <input id="poem_poem_date" type="text" className="form-control" placeholder="Poem Date" />
+                                <label htmlFor="poem_poem_date">Poem Date</label>
+                            </div>
                         </div>
                     </div>
-                    <div className="col">
-                        <div className="form-floating form-field">
-                            <input id="poem-details_poem_title" type="text" className="form-control" placeholder="Poem Title" required />
-                            <label htmlFor="poem-details_poem_title">Poem Title</label>
-                        </div>
+                    <div className="form-floating form-field">
+                        <textarea id="poem-details_poem_lines" style={{height: "200px"}} className="form-control" placeholder="Poem Lines" required></textarea>
+                        <label htmlFor="poem-details_poem_lines">Poem Lines</label>
                     </div>
-                    <div className="col">
-                        <div className="form-floating form-field">
-                            <input id="poem_poem_date" type="text" className="form-control" placeholder="Poem Date" />
-                            <label htmlFor="poem_poem_date">Poem Date</label>
-                        </div>
+                    <div className="form-floating form-field">
+                        <textarea id="details_behind_title" style={{height: "100px"}} className="form-control" placeholder="Behind the Title"></textarea>
+                        <label htmlFor="details_behind_title">Behind the Title</label>
                     </div>
-                </div>
-                <div className="form-floating form-field">
-                    <textarea id="poem-details_poem_lines" style={{height: "200px"}} className="form-control" placeholder="Poem Lines" required></textarea>
-                    <label htmlFor="poem-details_poem_lines">Poem Lines</label>
-                </div>
-                <div className="form-floating form-field">
-                    <textarea id="details_behind_title" style={{height: "100px"}} className="form-control" placeholder="Behind the Title"></textarea>
-                    <label htmlFor="details_behind_title">Behind the Title</label>
-                </div>
-                <div className="form-floating form-field">
-                    <textarea id="details_behind_poem" style={{height: "100px"}} className="form-control" placeholder="Behind the Poem"></textarea>
-                    <label htmlFor="details_behind_poem">Behind the Poem</label>
-                </div>
-                <input type="reset" className="btn btn-outline-primary" />
-                <button id="create-poem-details" type="submit" className="btn btn-outline-primary">Submit</button>
-            </form>
-        </div>
-        </div>
-
-        <div>
-        <button id="process-poem" className="btn btn-outline-primary" onClick={processPoem}>Process a poem file <span className="material-icons">file_open</span></button>
-
-        <button id="delete-poem" className="btn btn-outline-primary" onClick={deletePoem}>Remove a poem <span className="material-icons">file_open</span></button>
-        </div>
-
-        <div>
-        <button id="process-details" className="btn btn-outline-primary" onClick={processDetails}>Process a poem details file <span className="material-icons">file_open</span></button>
+                    <div className="form-floating form-field">
+                        <textarea id="details_behind_poem" style={{height: "100px"}} className="form-control" placeholder="Behind the Poem"></textarea>
+                        <label htmlFor="details_behind_poem">Behind the Poem</label>
+                    </div>
+                    <input type="reset" className="btn btn-outline-primary" />
+                    <button id="create-poem-details" type="submit" className="btn btn-outline-primary">Submit</button>
+                </form>
+            </div>
         </div>
         </>
     );
