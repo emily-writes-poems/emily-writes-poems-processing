@@ -21,8 +21,7 @@
     .btn-outline-primary:hover,
     .btn-outline-primary:active,
     .btn-outline-primary:visited,
-    .btn-outline-primary:focus,
-    .form-check-input:checked {
+    .btn-outline-primary:focus {
         background-color: #F8F8FF;
         border-color: #5B58BB;
         color: #5B58BB;
@@ -40,7 +39,6 @@
     td {
         color: #F8F8FF;
     }
-
 }
 
 @media (prefers-color-scheme: light) {
@@ -56,8 +54,7 @@
     .btn-outline-primary:hover,
     .btn-outline-primary:active,
     .btn-outline-primary:visited,
-    .btn-outline-primary:focus,
-    .form-check-input:checked {
+    .btn-outline-primary:focus {
         background-color: #5B58BB;
         border-color: #5B58BB;
         color: #F8F8FF;
@@ -113,6 +110,16 @@ textarea {
 
 th {
     color: #5B58BB;
+}
+
+.table > :not(:first-child) {
+    border-top: 0;
+}
+
+.form-check-input:checked {
+    background-color: #5B58BB;
+    border-color: #5B58BB;
+    color: #F8F8FF;
 }
 
 .small-option {
