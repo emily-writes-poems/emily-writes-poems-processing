@@ -136,6 +136,7 @@ th {
 
 .nav-pills {
     display: flex;
+    align-items: center;
     justify-content: center;
     margin-bottom: 3em;
 }
@@ -143,15 +144,19 @@ th {
 .nav-pills .nav-link {
     margin-right: 1.5em;
     font-size: 1.25em;
-}
-
-.nav-pills .nav-link, .nav-link:hover, .nav-link:focus {
     color: #5B58BB;
     border: solid 0.05em #5B58BB;
 }
 
-.nav-pills .nav-link.active, .nav-pills .nav-item.show > .nav-link {
+.nav-pills .nav-link.active {
     color: #F8F8FF;
     background-color: #8A88D2;
     border: solid 0.05em #5B58BB;
+}
+
+#toggle-theme {
+    color: #817E92;
+    border-color: #817E92;
+    font-size: 0.85em;
+    vertical-align: middle;
 }

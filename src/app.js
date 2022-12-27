@@ -2,7 +2,6 @@ import PoemDetailsTab from './poem-details-tab.js';
 import CollectionTab from './collection-tab.js';
 import FeatureTab from './feature-tab.js';
 
-
 const App = () => {
     const [ poemsList, setPoemsList ] = React.useState([]);
     const [ refreshPoemsList, setRefreshPoemsList ] = React.useState(false);
@@ -11,6 +10,10 @@ const App = () => {
         const res = window.electron.gatherPoems();
         setPoemsList(res);
     }, [refreshPoemsList]);
+
+    const toggleTheme = () => {
+        window.electron.toggleTheme();
+    }
 
     return (
         <>
@@ -25,6 +28,9 @@ const App = () => {
                 </li>
                 <li className="nav-item">
                     <button className="nav-link" data-bs-toggle="tab" data-bs-target="#feature-tab" type="button" role="tab">Feature</button>
+                </li>
+                <li className="nav-item">
+                    <button id="toggle-theme" className="nav-link" type="button" role="tab" onClick={toggleTheme}>Day/Night <span className= "material-icons">brightness_4</span></button>
                 </li>
             </ul>
             <div className="tab-content">

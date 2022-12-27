@@ -281,12 +281,19 @@ ipcMain.on('delete-feature', (event, args) => {
 
 
 nativeTheme.on('updated', () => {
-    nativeTheme.themeSource = 'system';
-
     if (nativeTheme.shouldUseDarkColors) {
         app.dock.setIcon('./images/ewp-logo-alt.png');
     } else {
         app.dock.setIcon('./images/ewp-logo.png');
+    }
+});
+
+
+ipcMain.on('toggle-theme', () => {
+    if (nativeTheme.shouldUseDarkColors) {
+        nativeTheme.themeSource = 'light';
+    } else {
+        nativeTheme.themeSource = 'dark';
     }
 });
 
@@ -302,6 +309,7 @@ app.whenReady().then(() => {
        // Then create the window
        createWindow();
 
+       nativeTheme.source = 'system';
        // Set the dock icon
        if (nativeTheme.shouldUseDarkColors) {
            app.dock.setIcon('./images/ewp-logo-alt.png');

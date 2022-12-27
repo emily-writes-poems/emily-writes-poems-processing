@@ -11,8 +11,8 @@ const FeatureTab = ({poems}) => {
         event.preventDefault();
         console.log('clicked to create a new feature!');
         let selected_poem = document.getElementById('feat_select-poem-dropdown');
-        let poem_id = selected_poem.options[selected_poem.selectedIndex].text;
-        let poem_title = selected_poem.options[selected_poem.selectedIndex].value;
+        let poem_id = selected_poem.options[selected_poem.selectedIndex].value;
+        let poem_title = selected_poem.options[selected_poem.selectedIndex].text;
         let featured_text = document.getElementById('feat_feature_text').value;
         let set_current_feature = document.getElementById('feat_set_current_feature').checked;
 
