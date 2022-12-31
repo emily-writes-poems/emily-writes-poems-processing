@@ -203,9 +203,20 @@ function runShellCommand(command) {
 
 // Process wordcloud for collection
 ipcMain.on('process-wordcloud', (event, collection_id) => {
-    let ret = runShellCommand(createCommand(config.process_wordcloud_script, [collection_id]));
+    let ret = runShellCommand(createCommand(config.process_wordcloud_script, ["update", collection_id]));
     if (ret == 0) {
         event.returnValue = collection_id;
+    } else { // Some error occured when running command
+        event.returnValue = -1;
+    }
+});
+
+
+// Delete wordcloud for collection
+ipcMain.on('delete-wordcloud', (event, collection_id) => {
+    let ret = runShellCommand(createCommand(config.process_wordcloud_script, ["delete", collection_id]));
+    if (ret == 0) {
+        event.returnValue = 0;
     } else { // Some error occured when running command
         event.returnValue = -1;
     }

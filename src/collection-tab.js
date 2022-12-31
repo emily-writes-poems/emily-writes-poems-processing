@@ -27,6 +27,14 @@ const CollectionTab = () => {
         setRefreshCollections(!refreshCollections);
     }
 
+    const deleteWordcloud = (collection_id) => {
+        event.preventDefault();
+        console.log('clicked to delete wordcloud!');
+        let ret = window.collections.deleteWordcloud(collection_id);
+        window.electron.sendDeleteNotification(ret, "wordcloud for collection: " + collection_id);
+        setRefreshCollections(!refreshCollections);
+    }
+
     return (
         <>
         <div id="collection" className="text-center">
@@ -55,9 +63,12 @@ const CollectionTab = () => {
                                     }
                                 </td>
                                 <td className="align-middle">
-                                    <span className="small-option" onClick={() => processWordcloud(coll.collection_id)}>(process)</span>
-                                    {coll.wordcloud &&
-                                        coll.wordcloud.map((i, idx) => <p key={idx} className="list-spacing">- {i.text} : {i.value}</p>)
+                                    <div className="small-option" onClick={() => processWordcloud(coll.collection_id)}>(process)</div>
+                                    {coll.wordcloud && coll.wordcloud.length != 0 &&
+                                        <>
+                                        &nbsp;<div className="small-option" onClick={() => deleteWordcloud(coll.collection_id)}>(delete)</div>
+                                        {coll.wordcloud.map((i, idx) => <p key={idx} className="list-spacing">- {i.text} : {i.value}</p>)}
+                                        </>
                                     }
                                 </td>
                             </tr>
