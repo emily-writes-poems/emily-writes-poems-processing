@@ -77,7 +77,7 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                 <td>
                                     {poem.poem_id}
                                     <br/>
-                                    <div className="small-option" onClick={() => openFile("poem", poem.poem_id)}>(open poem file)</div> &nbsp;
+                                    <div className="small-option" onClick={() => openFile("poem", poem.poem_id)}>(open poem file)</div>&nbsp;
                                     <div className="small-option" onClick={() => openFile("details", poem.poem_id)}>(open details file)</div>
                                 </td>
                                 <td>{poem.poem_title}</td>

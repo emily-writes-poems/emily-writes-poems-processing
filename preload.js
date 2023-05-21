@@ -82,6 +82,9 @@ contextBridge.exposeInMainWorld('collections', {
     },
     processWordcloud: (collection_id) => {
         return ipcRenderer.sendSync('process-wordcloud', collection_id);
+    },
+    deleteWordcloud: (collection_id) => {
+        return ipcRenderer.sendSync('delete-wordcloud', collection_id);
     }
 });
 
