@@ -21,8 +21,7 @@
     .btn-outline-primary:hover,
     .btn-outline-primary:active,
     .btn-outline-primary:visited,
-    .btn-outline-primary:focus,
-    .form-check-input:checked {
+    .btn-outline-primary:focus {
         background-color: #F8F8FF;
         border-color: #5B58BB;
         color: #5B58BB;
@@ -40,7 +39,6 @@
     td {
         color: #F8F8FF;
     }
-
 }
 
 @media (prefers-color-scheme: light) {
@@ -56,8 +54,7 @@
     .btn-outline-primary:hover,
     .btn-outline-primary:active,
     .btn-outline-primary:visited,
-    .btn-outline-primary:focus,
-    .form-check-input:checked {
+    .btn-outline-primary:focus {
         background-color: #5B58BB;
         border-color: #5B58BB;
         color: #F8F8FF;
@@ -74,7 +71,8 @@
 }
 
 body {
-    font-family: Merriweather;
+    font-family: 'Merriweather';
+    font-size: 16px;
 }
 
 .btn {
@@ -86,13 +84,14 @@ body {
     margin-top: -0.1em;
 }
 
-h1 {
+#title {
     color: #5B58BB;
+    text-align: center;
 }
 
 
 h4 {
-    color: #5B58BB;
+    color: #8A88D2;
     margin: 0.75em 0;
 }
 
@@ -113,15 +112,51 @@ th {
     color: #5B58BB;
 }
 
-.small-option {
-    text-decoration: underline;
-    font-size: 0.75em;
-    cursor: pointer;
-    color: #817E92;
-    margin-left: 0.5em;
+.table > :not(:first-child) {
+    border-top: 0;
 }
 
-.collection-poems {
-    list-style-position: inside;
-    padding-left: 0;
+.form-check-input:checked {
+    background-color: #5B58BB;
+    border-color: #5B58BB;
+    color: #F8F8FF;
+}
+
+.small-option {
+    text-decoration: underline;
+    font-size: 0.8em;
+    cursor: pointer;
+    color: #817E92;
+    display: inline-block;
+}
+
+.list-spacing {
+    margin: 0;
+}
+
+.nav-pills {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3em;
+}
+
+.nav-pills .nav-link {
+    margin-right: 1.5em;
+    font-size: 1.25em;
+    color: #5B58BB;
+    border: solid 0.05em #5B58BB;
+}
+
+.nav-pills .nav-link.active {
+    color: #F8F8FF;
+    background-color: #8A88D2;
+    border: solid 0.05em #5B58BB;
+}
+
+#toggle-theme {
+    color: #817E92;
+    border-color: #817E92;
+    font-size: 0.85em;
+    vertical-align: middle;
 }

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron')
+const { app, BrowserWindow, ipcMain, nativeTheme, shell } = require('electron')
 const dialog = require('electron').dialog
 const { execSync } = require('child_process')
 const { MongoClient } = require('mongodb');
@@ -9,13 +9,6 @@ var config = require('./config');
 
 var mongo_database = null
 
-// Connect to Mongo database
-MongoClient.connect(config.mongo_conn, (err, client) => {
-   if(err) throw err;
-   mongo_database = client.db(config.mongo_db);
-   console.log('finished connecting to Mongo DB')
-});
-
 
 // Load the app window
 function createWindow () {
@@ -23,10 +16,8 @@ function createWindow () {
         width: 1000,
         height: 750,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            enableRemoteModule: true,
-            nativeWindowOpen: true
+            nativeWindowOpen: true,
+            preload: path.join(__dirname, 'preload.js')
         },
     })
 
@@ -34,23 +25,21 @@ function createWindow () {
 }
 
 
-// Gather list of poem collections
-ipcMain.on('gather-all-collections', (event, args) => {
-    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: { _id : 0 } }).toArray((err, result) => {
+// Gather list of poems
+ipcMain.on('gather-all-poems', (event, args) => {
+    mongo_database.collection(config.mongo_poems_coll).find({}, { sort: ["poem_id", 1], projection: {_id : 0} }).toArray((err, result) => {
         if(err) throw err;
-        // console.log(result);
         event.returnValue = result;
     });
 });
 
 
-// Gather list of poems
-ipcMain.on('gather-all-poems', (event, args) => {
-    mongo_database.collection(config.mongo_poems_coll).find({}, { projection: {"poem_id" : 1, "poem_title" : 1, _id : 0} }).toArray((err, result) => {
+// Gather list of poem collections
+ipcMain.on('gather-all-collections', (event, args) => {
+    mongo_database.collection(config.mongo_poemcolls_coll).find({}, { projection: { _id : 0 } }).toArray((err, result) => {
         if(err) throw err;
-        // console.log(result);
         event.returnValue = result;
-    })
+    });
 });
 
 
@@ -60,6 +49,12 @@ ipcMain.on('gather-all-features', (event, args) => {
         if(err) throw err;
         event.returnValue = result;
     })
+});
+
+
+// Open file from path
+ipcMain.on('open-file', (event, args) => {
+    shell.openPath(args[0] + args[1] + args[2]);
 });
 
 
@@ -103,28 +98,10 @@ ipcMain.on('create-new-details', (event, args) => {
         details_file.end();
     });
 
-    event.returnValue = file_name;
+    details_file.on('close', () => {
+        event.returnValue = file_name;
+    })
 })
-
-
-// Create new feature from form fields
-ipcMain.on('create-new-feature', (event, args) => {
-    let [poem_id, poem_title, feature_text, set_current_feature] = args;
-
-    if (set_current_feature == true) { // Want to set this new feature as the current feature, so unset any existing current feature
-        invalidateFeature();
-    }
-    // Insert into DB
-    mongo_database.collection(config.mongo_feat_coll).insertOne( { "poem_id" : poem_id, "poem_title" : poem_title, "featured_text" : feature_text, "currently_featured" : set_current_feature }, (err, result) => {
-        if(err) throw err;
-        console.log("Inserted new feature: " + args)
-        if(set_current_feature) {
-            event.returnValue = "Set as current feature: " + poem_title;
-        } else {
-            event.returnValue = "Not set as current feature.";
-        }
-    } );
-});
 
 
 // Create new poem collection from form fields
@@ -138,11 +115,31 @@ ipcMain.on('create-new-collection', (event, args) => {
 });
 
 
+// Create new feature from form fields
+ipcMain.on('create-new-feature', (event, args) => {
+    let [poem_id, poem_title, feature_text, set_current_feature] = args;
+
+    if (set_current_feature == true) { // Want to set this new feature as the current feature, so unset any existing current feature
+        unsetCurrentFeature();
+    }
+    // Insert into DB
+    mongo_database.collection(config.mongo_feat_coll).insertOne( { "poem_id" : poem_id, "poem_title" : poem_title, "featured_text" : feature_text, "currently_featured" : set_current_feature }, (err, result) => {
+        if(err) throw err;
+        console.log("Inserted new feature: " + args)
+        if(set_current_feature) {
+            event.returnValue = "Set as current feature: " + poem_title;
+        } else {
+            event.returnValue = "Not set as current feature: " + poem_title;
+        }
+    } );
+});
+
+
 // Show open file dialog:
 // If a file was chosen, run the specified command via shell script
-ipcMain.on('open-file-dialog', (event, [path, isShellCommand, command, args]) => {
+ipcMain.on('open-file-dialog', (event, [folder_path, isShellCommand, command, args]) => {
     dialog.showOpenDialog({
-        defaultPath: path,
+        defaultPath: folder_path,
         properties: ['openFile']
     }).then(selected_file => {
         if (!selected_file.canceled) {
@@ -154,12 +151,23 @@ ipcMain.on('open-file-dialog', (event, [path, isShellCommand, command, args]) =>
                     event.returnValue = -1;
                 }
             } else if (command == 'delete-poem') {  // Delete poem
-                let ret = deletePoem(selected_file.filePaths[0]);
-                if (ret == 0) {
-                    event.returnValue = selected_file.filePaths;
-                } else {
-                    event.returnValue = -1;
-                }
+                let poem_file = selected_file.filePaths[0];
+                let poem_id = path.basename(poem_file, '.txt');
+                let options = {
+                    buttons: ["Yes" , "No"],
+                    message: 'Are you sure you want to delete this poem? poem_id: ' + poem_id,
+                    type: 'question'
+                };
+
+                dialog.showMessageBox(options).then((response) => {
+                    if (response.response == 0) {  // confirmed to delete
+                        let ret = runShellCommand(createCommand(config.remove_poem_script, [poem_file]));
+                        event.returnValue = poem_id;
+                    } else {  // canceled deletion
+                        console.log('Canceled poem deletion');
+                        event.returnValue = 1;
+                    }
+                });
             } else {
                 event.returnValue = -1;
             }
@@ -193,27 +201,27 @@ function runShellCommand(command) {
 }
 
 
-// Handle poem deletion
-function deletePoem(poem_file) {
-    let poem_id = path.basename(poem_file, '.txt');
-
-    let options = {
-        buttons: ["Yes" , "No"],
-        message: 'Are you sure you want to delete this poem? poem_id: ' + poem_id,
-        type: 'question'
+// Process wordcloud for collection
+ipcMain.on('process-wordcloud', (event, collection_id) => {
+    let ret = runShellCommand(createCommand(config.process_wordcloud_script, [collection_id]));
+    if (ret == 0) {
+        event.returnValue = collection_id;
+    } else { // Some error occured when running command
+        event.returnValue = -1;
     }
+});
 
-    dialog.showMessageBox(options).then((response) => {
-        if (response.response == 0) {  // confirmed to delete
-            let ret = runShellCommand(createCommand(config.remove_poem_script, [poem_file]));
-            return ret;
-        } else {  // canceled deletion
-            console.log('Canceled poem deletion');
-            return -1;
+
+// Clear any currently featured poems
+function unsetCurrentFeature() {
+    mongo_database.collection(config.mongo_feat_coll).updateMany( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, res) => {
+        if(err) { throw err; }
+        else {
+            console.log("Successfully unset current feature.");
+            return;
         }
     });
 }
-
 
 // Handle editing current feature
 ipcMain.on('edit-current-feature', (event, args) => {
@@ -225,23 +233,20 @@ ipcMain.on('edit-current-feature', (event, args) => {
     }
 
     dialog.showMessageBox(options).then((response) => {
-        if (response.response == 0) {  // confirmed
+        if (response.response == 0) {  // confirmed, unset the current feature
             mongo_database.collection(config.mongo_feat_coll).updateMany( { "currently_featured" : true }, { "$set" : { "currently_featured" : false } }, (err, res) => {
                 if(err) { event.returnValue = -1; }
                 else {
-                    // console.log("Successfully unset current feature.");
-                    if(!args[2]) {
+                    if(!args[2]) {  // if this wasn't the previously set feature, set it as the current feature
                         mongo_database.collection(config.mongo_feat_coll).updateOne( { "poem_id" : args[0], "featured_text" : args[1] }, { "$set" : { "currently_featured" : true } }, (err, res) => {
                             if(err) { event.returnValue = -1; }
                             else {
-                                // console.log("Successfully set current feature.");
                                 event.returnValue = 0;
                             }
                         } );
 
-                    } else {
-                        // console.log('Not setting any feature.');
-                        event.returnValue = 0;
+                    } else {  // this means we removed the previously set feature, and that's all we want to do
+                        event.returnValue = 1;
                     }
                 }
             })
@@ -269,15 +274,13 @@ ipcMain.on('delete-feature', (event, args) => {
                 event.returnValue = 0;
             })
         } else {
-            event.returnValue = -1;
+            event.returnValue = 1;
         }
     })
 })
 
 
 nativeTheme.on('updated', () => {
-    nativeTheme.themeSource = 'system';
-
     if (nativeTheme.shouldUseDarkColors) {
         app.dock.setIcon('./images/ewp-logo-alt.png');
     } else {
@@ -286,19 +289,32 @@ nativeTheme.on('updated', () => {
 });
 
 
+ipcMain.on('toggle-theme', () => {
+    if (nativeTheme.shouldUseDarkColors) {
+        nativeTheme.themeSource = 'light';
+    } else {
+        nativeTheme.themeSource = 'dark';
+    }
+});
+
+
 // Start up the app
 app.whenReady().then(() => {
-    createWindow();
+    // Connect to Mongo database
+    MongoClient.connect(config.mongo_conn, (err, client) => {
+       if(err) throw err;
+       mongo_database = client.db(config.mongo_db);
+       console.log('finished connecting to Mongo DB')
 
-    if (nativeTheme.shouldUseDarkColors) {
-        app.dock.setIcon('./images/ewp-logo-alt.png');
-    } else {
-        app.dock.setIcon('./images/ewp-logo.png');
-    }
+       // Then create the window
+       createWindow();
 
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow()
-        }
-    })
+       nativeTheme.source = 'system';
+       // Set the dock icon
+       if (nativeTheme.shouldUseDarkColors) {
+           app.dock.setIcon('./images/ewp-logo-alt.png');
+       } else {
+           app.dock.setIcon('./images/ewp-logo.png');
+       }
+    });
 })

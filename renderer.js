@@ -2,29 +2,6 @@ const { ipcRenderer } = require('electron')
 var config = require('./config')
 
 
-document.querySelectorAll('.form-control').forEach(item => {
-    item.addEventListener('keydown', (event) => {
-        switch(event.key) {
-            case 'Meta':
-            case 'Shift':
-            case 'Control':
-            case 'Alt':
-            case 'CapsLock':
-                break;
-            case 'Tab':
-            case 'Escape':
-                document.getElementById('typewriter-bell').play();
-            case ' ':
-                document.getElementById('typewriter-space').play();
-            case 'Enter':
-                document.getElementById('typewriter-return').play();
-            default:
-                document.getElementById('typewriter-key').play();
-        };
-    });
-})
-
-
 function createDropdown(function_call, dropdown_menu, option_text, option_value) {
     ret = ipcRenderer.sendSync(function_call);
 
@@ -207,11 +184,14 @@ function refreshCollectionsTable() {
 
         let poems_list = document.createElement("ul");
         poems_list.classList.add("collection-poems");
-        for(let j = 0; j < poem_titles.length; j++) {
-            let poem = document.createElement("li");
-            poem.textContent = poem_titles[j];
-            poems_list.append(poem);
+        if (poem_titles) {
+            for(let j = 0; j < poem_titles.length; j++) {
+                let poem = document.createElement("li");
+                poem.textContent = poem_titles[j];
+                poems_list.append(poem);
+            }
         }
+
         poems_el.append(poems_list);
 
         row.append(poems_el);
