@@ -51,45 +51,25 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
         window.electron.sendProcessNotification(ret, "details");
     }
 
+    const linkPoems = (poem1, poem2) => {
+        window.poem_details.linkPoems(poem1, poem2);
+        refreshPoemsList();
+    }
+
+
     return (
         <>
         <div id="poem-details" className="text-center">
-            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#poems_table_div">Display all poems ({poems.length}) <span className="material-icons">menu_open</span></button>
-            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new-poem-details">Create a new poem and/or details file <span className="material-icons">note_add</span></button>
-            <br />
-            <button id="process-poem" className="btn btn-outline-primary" onClick={processPoem}>Process a poem file <span className="material-icons">file_open</span></button>
-            <button id="delete-poem" className="btn btn-outline-primary" onClick={deletePoem}>Remove a poem <span className="material-icons">file_open</span></button>
-            <button id="process-details" className="btn btn-outline-primary" onClick={processDetails}>Process a poem details file <span className="material-icons">file_open</span></button>
-
-            <div id="poems_table_div" className="collapse" data-bs-parent="#poem-details">
-                <h5>Poems</h5>
-                <table id="poems_table" className="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Poem ID</th>
-                            <th>Poem Title</th>
-                            <th>Poem Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {poems.map((poem, index) =>
-                            <tr key={index}>
-                                <td>
-                                    {poem.poem_id}
-                                    <br/>
-                                    <div className="small-option" onClick={() => openFile("poem", poem.poem_id)}>(open poem file)</div>&nbsp;
-                                    <div className="small-option" onClick={() => openFile("details", poem.poem_id)}>(open details file)</div>
-                                </td>
-                                <td>{poem.poem_title}</td>
-                                <td>{poem.poem_date}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+            <div className="button-options">
+                <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new-poem-details">Create a new poem and/or details file <span className="material-icons">note_add</span></button>
+                <br />
+                <button id="process-poem" className="btn btn-outline-primary" onClick={processPoem}>Process a poem file <span className="material-icons">file_open</span></button>
+                <button id="delete-poem" className="btn btn-outline-primary" onClick={deletePoem}>Remove a poem <span className="material-icons">file_open</span></button>
+                <button id="process-details" className="btn btn-outline-primary" onClick={processDetails}>Process a poem details file <span className="material-icons">file_open</span></button>
             </div>
 
-            <div id="new-poem-details" className="collapse" data-bs-parent="#poem-details">
-                <h5>New poem and/or details file</h5>
+            <div id="new-poem-details" className="collapse">
+                <h4>New poem and/or details file</h4>
                 <form id="new-poem-details_form" onSubmit={createPoemDetails}>
                     <div className="row">
                         <div className="col">
@@ -126,6 +106,51 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                     <input type="reset" className="btn btn-outline-primary" />
                     <button id="create-poem-details" type="submit" className="btn btn-outline-primary">Submit</button>
                 </form>
+            </div>
+
+            <div id="poems-table">
+                <h4>Poems ({poems.length})</h4>
+                <table id="poems_table" className="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Poem ID</th>
+                            <th>Poem Title</th>
+                            <th>Poem Date</th>
+                            <th><i>Tools</i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {poems.map((poem, index) =>
+                            <>
+                                <tr key={index}>
+                                    <td>
+                                        {poem.poem_id}
+                                    </td>
+                                    <td>{poem.poem_title}</td>
+                                    <td>{poem.poem_date}</td>
+                                    <td>
+                                        <div className="small-option" onClick={() => openFile("poem", poem.poem_id)}>(open poem file)</div>
+                                        <div className="small-option" onClick={() => openFile("details", poem.poem_id)}>(open details file)</div>
+                                        <div className="small-option" data-bs-toggle="collapse" data-bs-target={"#link-poems-" + index}>(link poems)</div>
+                                    </td>
+                                </tr>
+                                <tr id={"link-poems-" + index} className="collapse">
+                                    <td colspan="4">Link "{poem.poem_title}" to
+                                        <select className="form-select" id={"link-to-poem-dropdown-" + index} defaultValue={""}>
+                                            <option value="" disabled>Select a poem</option>
+                                            {poems.map((poem, index) =>
+                                                <option key={index} value={poem.poem_id}>
+                                                    {poem.poem_title}
+                                                </option>
+                                            )}
+                                        </select>
+                                        <button id={"link-poems-submit-" + index} className="btn btn-outline-primary small-button">Link poems</button>
+                                    </td>
+                                </tr>
+                            </>
+                        )}
+                    </tbody>
+                </table>
             </div>
         </div>
         </>
