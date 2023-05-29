@@ -51,9 +51,19 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
         window.electron.sendProcessNotification(ret, "details");
     }
 
-    const linkPoems = (poem1, poem2) => {
-        window.poem_details.linkPoems(poem1, poem2);
-        refreshPoemsList();
+    const linkPoems = (poem1_id, poem1_title) => {
+        let poem_dropdown = document.getElementById("link-to-poem-dropdown-" + poem1_id);
+        let poem2_id = poem_dropdown.options[poem_dropdown.selectedIndex].value;
+
+        if (poem2_id) {
+            console.log(poem1_id, poem2_id);
+            let poem2_title = poem_dropdown.options[poem_dropdown.selectedIndex].text;
+            let ret = window.poem_details.linkPoems(poem1_id, poem1_title, poem2_id, poem2_title);
+            window.electron.sendPoemsLinkedNotification(ret);
+            refreshPoemsList();
+        } else {
+            console.log("select a poem to link");
+        }
     }
 
 
@@ -135,8 +145,8 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                     </td>
                                 </tr>
                                 <tr id={"link-poems-" + index} className="collapse">
-                                    <td colspan="4">Link "{poem.poem_title}" to
-                                        <select className="form-select" id={"link-to-poem-dropdown-" + index} defaultValue={""}>
+                                    <td colSpan="4">Link "{poem.poem_title}" to
+                                        <select className="form-select" id={"link-to-poem-dropdown-" + poem.poem_id} defaultValue={""}>
                                             <option value="" disabled>Select a poem</option>
                                             {poems.map((poem, index) =>
                                                 <option key={index} value={poem.poem_id}>
@@ -144,7 +154,7 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                                 </option>
                                             )}
                                         </select>
-                                        <button id={"link-poems-submit-" + index} className="btn btn-outline-primary small-button">Link poems</button>
+                                        <button id={"link-poems-submit-" + poem.poem_id + index} className="btn btn-outline-primary small-button" onClick={()=> linkPoems(poem.poem_id, poem.poem_title)}>Link poems</button>
                                     </td>
                                 </tr>
                             </>

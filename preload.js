@@ -49,6 +49,9 @@ contextBridge.exposeInMainWorld('electron', {
         } else {
             new Notification('Error editing current feature', { body : "For poem: " + poem_id } );
         }
+    },
+    sendPoemsLinkedNotification: (ret) => {
+        new Notification('Link poems', { body : ret } );
     }
 });
 
@@ -73,6 +76,9 @@ contextBridge.exposeInMainWorld('poem_details', {
     },
     processDetails: () => {
         return ipcRenderer.sendSync('open-file-dialog', [config.details_folder, true, config.process_details_script]);
+    },
+    linkPoems: (poem1_id, poem1_title, poem2_id, poem2_title) => {
+        return ipcRenderer.sendSync('link-poems', [poem1_id, poem1_title, poem2_id, poem2_title])
     }
 });
 
