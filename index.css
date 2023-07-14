@@ -80,7 +80,6 @@ body {
 }
 
 .small-button {
-    font-size: 0.75em;
     padding: 0.5em;
 }
 
@@ -93,7 +92,6 @@ body {
     color: #5B58BB;
     text-align: center;
 }
-
 
 h4 {
     color: #8A88D2;
@@ -136,6 +134,10 @@ th {
     white-space: nowrap;
 }
 
+.same-line {
+    display: inline-block;
+}
+
 .list-spacing {
     margin: 0;
 }
@@ -158,6 +160,11 @@ th {
     color: #F8F8FF;
     background-color: #8A88D2;
     border: solid 0.05em #5B58BB;
+}
+
+.link-poems-section h6 {
+    font-weight: bold;
+    margin: 0.65em;
 }
 
 #toggle-theme {

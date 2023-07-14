@@ -66,6 +66,12 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
         }
     }
 
+    const deleteLinkedPoem = (poem1_id, poem2_id) => {
+        console.log(poem1_id, poem2_id);
+        let ret = window.poem_details.deleteLinkedPoem(poem1_id, poem2_id);
+        window.electron.sendPoemsLinkedNotification(ret);
+        refreshPoemsList();
+    }
 
     return (
         <>
@@ -131,36 +137,55 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                     </thead>
                     <tbody>
                         {poems.map((poem, index) =>
-                            <>
-                                <tr key={index}>
-                                    <td>
-                                        {poem.poem_id}
-                                    </td>
-                                    <td>{poem.poem_title}</td>
-                                    <td>{poem.poem_date}</td>
-                                    <td>
-                                        <div className="small-option" onClick={() => openFile("poem", poem.poem_id)}>(open poem file)</div>
-                                        <div className="small-option" onClick={() => openFile("details", poem.poem_id)}>(open details file)</div>
-                                        <div className="small-option" data-bs-toggle="collapse" data-bs-target={"#link-poems-" + index}>(link poems)</div>
-                                    </td>
-                                </tr>
-                                <tr id={"link-poems-" + index} className="collapse">
-                                    <td colSpan="4">Link "{poem.poem_title}" to
-                                        <select className="form-select" id={"link-to-poem-dropdown-" + poem.poem_id} defaultValue={""}>
-                                            <option value="" disabled>Select a poem</option>
-                                            {poems.map((poem, index) =>
-                                                <option key={index} value={poem.poem_id}>
-                                                    {poem.poem_title}
-                                                </option>
-                                            )}
-                                        </select>
-                                        <button id={"link-poems-submit-" + poem.poem_id + index} className="btn btn-outline-primary small-button" onClick={()=> linkPoems(poem.poem_id, poem.poem_title)}>Link poems</button>
-                                    </td>
-                                </tr>
-                            </>
+                            <tr key={index}>
+                                <td>
+                                    {poem.poem_id}
+                                </td>
+                                <td>{poem.poem_title}</td>
+                                <td>{poem.poem_date}</td>
+                                <td>
+                                    <div className="small-option" onClick={() => openFile("poem", poem.poem_id)}>(open poem file)</div>
+                                    <div className="small-option" onClick={() => openFile("details", poem.poem_id)}>(open details file)</div>
+                                    <div className="small-option" data-bs-toggle="modal" data-bs-target={"#link-poems-" + poem.poem_id}>(link poems)</div>
+                                </td>
+                            </tr>
                         )}
                     </tbody>
                 </table>
+
+                {poems.map((poem, index) =>
+                    <div key={index} className="modal fade" id={"link-poems-" + poem.poem_id} tab-index="-1" data-bs-backdrop="static">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h6 className="modal-title">LINK POEM > {poem.poem_title}</h6>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div className="modal-body link-poems-section">
+                                    { poem.linked_poems_ids &&
+                                        <div className="linked-poems-list">
+                                            <h6>> Already linked to</h6>
+                                            {poem.linked_poems_titles.map((linked_poem, index) =>
+                                                <p className="list-spacing">{linked_poem} <span className="small-option same-line" onClick={() => deleteLinkedPoem(poem.poem_id, poem.linked_poems_ids[index])}>(delete link)</span></p>
+                                            )}
+                                        </div>
+                                    }
+                                    <h6>> Link to</h6>
+                                    <select className="form-select" id={"link-to-poem-dropdown-" + poem.poem_id} defaultValue={""}>
+                                        <option value="" disabled>Select a poem</option>
+                                        {poems.map((poem, index) =>
+                                            <option key={index} value={poem.poem_id}>
+                                                {poem.poem_title}
+                                            </option>
+                                        )}
+                                    </select>
+                                    <button id={"link-poems-submit-" + poem.poem_id + index} className="btn btn-outline-primary small-button" onClick={()=> linkPoems(poem.poem_id, poem.poem_title)}>Link poems</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
         </>
