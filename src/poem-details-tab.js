@@ -66,9 +66,9 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
         }
     }
 
-    const deleteLinkedPoem = (poem1_id, poem2_id) => {
+    const deleteLinkedPoem = (poem1_id, poem1_title, poem2_id, poem2_title) => {
         console.log(poem1_id, poem2_id);
-        let ret = window.poem_details.deleteLinkedPoem(poem1_id, poem2_id);
+        let ret = window.poem_details.deleteLinkedPoem(poem1_id, poem1_title, poem2_id, poem2_title);
         window.electron.sendPoemsLinkedNotification(ret);
         refreshPoemsList();
     }
@@ -165,8 +165,8 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                     { poem.linked_poems_ids &&
                                         <div className="linked-poems-list">
                                             <h6>> Already linked to</h6>
-                                            {poem.linked_poems_titles.map((linked_poem, index) =>
-                                                <p className="list-spacing">{linked_poem} <span className="small-option same-line" onClick={() => deleteLinkedPoem(poem.poem_id, poem.linked_poems_ids[index])}>(delete link)</span></p>
+                                            {poem.linked_poems_titles.map((linked_poem_title, index) =>
+                                                <p className="list-spacing">{linked_poem_title} <span className="small-option same-line" onClick={() => deleteLinkedPoem(poem.poem_id, poem.poem_title, poem.linked_poems_ids[index], linked_poem_title)}>(delete link)</span></p>
                                             )}
                                         </div>
                                     }

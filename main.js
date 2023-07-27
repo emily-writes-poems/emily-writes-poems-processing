@@ -126,6 +126,26 @@ ipcMain.on('link-poems', (event, args) => {
 });
 
 
+ipcMain.on('delete-poem-link', (event, args) => {
+    let poem1_id = args[0];
+    let poem2_id = args[2];
+
+    // Check if poems are linked, then delete link
+    mongo_database.collection(config.mongo_poems_coll).count( { "poem_id" : poem1_id, "linked_poems_ids" : poem2_id }, (err, result) => {
+        if(err) throw err;
+        if(result == 0) { event.returnValue = "Poems are not linked!"; return; }
+        else {
+            let poem1_title = args[1];
+            let poem2_title = args[3];
+            mongo_database.collection(config.mongo_poems_coll).updateOne( { "poem_id" : poem1_id }, { $pull: { "linked_poems_ids" : poem2_id, "linked_poems_titles" : poem2_title } });
+            mongo_database.collection(config.mongo_poems_coll).updateOne( { "poem_id" : poem2_id }, { $pull: { "linked_poems_ids" : poem1_id, "linked_poems_titles" : poem1_title } });
+
+            event.returnValue = ("Unlinked poems: " + poem1_id + ", " + poem2_id);
+        }
+    })
+})
+
+
 // Create new poem collection from form fields
 ipcMain.on('create-new-collection', (event, args) => {
     // Insert into DB

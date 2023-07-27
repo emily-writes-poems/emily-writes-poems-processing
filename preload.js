@@ -78,7 +78,10 @@ contextBridge.exposeInMainWorld('poem_details', {
         return ipcRenderer.sendSync('open-file-dialog', [config.details_folder, true, config.process_details_script]);
     },
     linkPoems: (poem1_id, poem1_title, poem2_id, poem2_title) => {
-        return ipcRenderer.sendSync('link-poems', [poem1_id, poem1_title, poem2_id, poem2_title])
+        return ipcRenderer.sendSync('link-poems', [poem1_id, poem1_title, poem2_id, poem2_title]);
+    },
+    deleteLinkedPoem: (poem1_id, poem1_title, poem2_id, poem2_title) => {
+        return ipcRenderer.sendSync('delete-poem-link', [poem1_id, poem1_title, poem2_id, poem2_title]);
     }
 });
 
