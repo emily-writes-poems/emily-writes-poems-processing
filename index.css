@@ -163,8 +163,12 @@ th {
 }
 
 .link-poems-section h6 {
+    color: #5B58BB;
     font-weight: bold;
-    margin: 0.65em;
+    margin-bottom: 0.25em;
+}
+.link-poems-section div {
+    margin-bottom: 1em;
 }
 
 #toggle-theme {

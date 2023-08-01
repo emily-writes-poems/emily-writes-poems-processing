@@ -155,7 +155,7 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
 
                 {poems.map((poem, index) =>
                     <div key={index} className="modal fade" id={"link-poems-" + poem.poem_id} tab-index="-1" data-bs-backdrop="static">
-                        <div className="modal-dialog">
+                        <div className="modal-dialog modal-dialog-centered">
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h6 className="modal-title">LINK POEM > {poem.poem_title}</h6>
@@ -163,22 +163,24 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                 </div>
                                 <div className="modal-body link-poems-section">
                                     { poem.linked_poems_ids &&
-                                        <div className="linked-poems-list">
-                                            <h6>> Already linked to</h6>
+                                        <div id="linked-poems-list">
+                                            <h6>Already linked to</h6>
                                             {poem.linked_poems_titles.map((linked_poem_title, index) =>
                                                 <p className="list-spacing">{linked_poem_title} <span className="small-option same-line" onClick={() => deleteLinkedPoem(poem.poem_id, poem.poem_title, poem.linked_poems_ids[index], linked_poem_title)}>(delete link)</span></p>
                                             )}
                                         </div>
                                     }
-                                    <h6>> Link to</h6>
-                                    <select className="form-select" id={"link-to-poem-dropdown-" + poem.poem_id} defaultValue={""}>
-                                        <option value="" disabled>Select a poem</option>
-                                        {poems.map((poem, index) =>
-                                            <option key={index} value={poem.poem_id}>
-                                                {poem.poem_title}
-                                            </option>
-                                        )}
-                                    </select>
+                                    <div className="link-poems-dropdown">
+                                        <h6>Link to</h6>
+                                        <select className="form-select" id={"link-to-poem-dropdown-" + poem.poem_id} defaultValue={""}>
+                                            <option value="" disabled>Select a poem</option>
+                                            {poems.map((poem, index) =>
+                                                <option key={index} value={poem.poem_id}>
+                                                    {poem.poem_title}
+                                                </option>
+                                            )}
+                                        </select>
+                                    </div>
                                     <button id={"link-poems-submit-" + poem.poem_id + index} className="btn btn-outline-primary small-button" onClick={()=> linkPoems(poem.poem_id, poem.poem_title)}>Link poems</button>
 
                                 </div>
