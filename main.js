@@ -27,7 +27,7 @@ function createWindow () {
 
 // Gather list of poems
 ipcMain.on('gather-all-poems', (event, args) => {
-    mongo_database.collection(config.mongo_poems_coll).find({}, { sort: ["poem_id", 1], projection: {_id : 0} }).toArray((err, result) => {
+    mongo_database.collection(config.mongo_poems_coll).find({}, { sort: ["poem_id", 1], projection: {_id : 0, poem_date : 0} }).toArray((err, result) => {
         if(err) throw err;
         event.returnValue = result;
     });
