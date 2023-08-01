@@ -40,35 +40,8 @@ const FeatureTab = ({poems}) => {
     return (
         <>
         <div id="feature" className="text-center">
-            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#features_table_div">Display all features <span className="material-icons">menu_open</span></button>
-            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span className="material-icons">add_circle</span></button>
-
-            <div id="features_table_div" className="collapse" data-bs-parent="#feature">
-                <table id="features_table" className="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th><span className="material-icons">star</span></th>
-                            <th>Poem Title</th>
-                            <th>Feature Text</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {features.map((feat, index) =>
-                            <tr key={index}>
-                                <td>
-                                    {feat.currently_featured ? '✔' : ''}
-                                    <span className="small-option" onClick={() => editCurrentFeature(feat.poem_id, feat.featured_text, feat.currently_featured)}>{feat.currently_featured ? '(unset)' : '(set)'}</span>
-                                </td>
-                                <td>
-                                    {feat.poem_title}
-                                    <br/>
-                                    <span className="small-option" onClick={() => deleteFeature(feat.poem_id, feat.featured_text)}>(delete)</span>
-                                </td>
-                                <td>{feat.featured_text}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+            <div className="button-options">
+                <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_feature">Create a poem feature <span className="material-icons">add_circle</span></button>
             </div>
 
             <div id="new_feature" className="collapse" data-bs-parent="#feature">
@@ -106,6 +79,35 @@ const FeatureTab = ({poems}) => {
                         <button id="create-feature" type="submit" className="btn btn-outline-primary">Submit</button>
                     </div>
                 </form>
+            </div>
+
+            <div id="features_table_div">
+                <h4>Features ({features.length})</h4>
+                <table id="features_table" className="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th><span className="material-icons">star</span></th>
+                            <th>Poem Title</th>
+                            <th>Feature Text</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {features.map((feat, index) =>
+                            <tr key={index}>
+                                <td>
+                                    {feat.currently_featured ? '✔' : ''}
+                                    <span className="small-option" onClick={() => editCurrentFeature(feat.poem_id, feat.featured_text, feat.currently_featured)}>{feat.currently_featured ? '(unset)' : '(set)'}</span>
+                                </td>
+                                <td>
+                                    {feat.poem_title}
+                                    <br/>
+                                    <span className="small-option" onClick={() => deleteFeature(feat.poem_id, feat.featured_text)}>(delete)</span>
+                                </td>
+                                <td>{feat.featured_text}</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         </div>
         </>

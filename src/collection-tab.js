@@ -38,11 +38,38 @@ const CollectionTab = () => {
     return (
         <>
         <div id="collection" className="text-center">
-            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#collections_table_div">Display all collections ({collections.length}) <span className="material-icons">menu_open</span></button>
-            <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection <span className="material-icons">note_add</span></button>
+            <div className="button-options">
+                <button className="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#new_collection">Create a new poem collection <span className="material-icons">note_add</span></button>
+            </div>
 
-            <div id="collections_table_div" className="collapse" data-bs-parent="#collection">
-                <h5>Collections</h5>
+            <div id="new_collection" className="collapse" data-bs-parent="#collection">
+                <h4>New collection</h4>
+                <form id="new_collection_form" onSubmit={createNewCollection}>
+                    <div className="row">
+                        <div className="col">
+                            <div className="form-floating form-field">
+                                <input id="coll_collection_id" type="text" className="form-control" placeholder="Collection ID" required />
+                                <label htmlFor="coll_collection_id">Collection ID</label>
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="form-floating form-field">
+                                <input id="coll_collection_name" type="text" className="form-control" placeholder="Collection Name" required />
+                                <label htmlFor="coll_collection_name">Collection Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="form-floating form-field">
+                        <textarea id="coll_collection_summary" style={{height: "100px"}} className="form-control" placeholder="Collection Summary"></textarea>
+                        <label htmlFor="coll_collection_summary">Collection Summary</label>
+                    </div>
+                    <input type="reset" className="btn btn-outline-primary" />
+                    <button id="create-collection" type="submit" className="btn btn-outline-primary">Submit</button>
+                </form>
+            </div>
+
+            <div id="collections_table_div">
+                <h4>Collections ({collections.length})</h4>
                 <table id="collections_table" className="table table-sm table-bordered">
                     <thead>
                         <tr>
@@ -75,32 +102,6 @@ const CollectionTab = () => {
                         )}
                     </tbody>
                 </table>
-            </div>
-
-            <div id="new_collection" className="collapse" data-bs-parent="#collection">
-                <h5>New collection</h5>
-                <form id="new_collection_form" onSubmit={createNewCollection}>
-                    <div className="row">
-                        <div className="col">
-                            <div className="form-floating form-field">
-                                <input id="coll_collection_id" type="text" className="form-control" placeholder="Collection ID" required />
-                                <label htmlFor="coll_collection_id">Collection ID</label>
-                            </div>
-                        </div>
-                        <div className="col">
-                            <div className="form-floating form-field">
-                                <input id="coll_collection_name" type="text" className="form-control" placeholder="Collection Name" required />
-                                <label htmlFor="coll_collection_name">Collection Name</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="form-floating form-field">
-                        <textarea id="coll_collection_summary" style={{height: "100px"}} className="form-control" placeholder="Collection Summary"></textarea>
-                        <label htmlFor="coll_collection_summary">Collection Summary</label>
-                    </div>
-                    <input type="reset" className="btn btn-outline-primary" />
-                    <button id="create-collection" type="submit" className="btn btn-outline-primary">Submit</button>
-                </form>
             </div>
         </div>
         </>

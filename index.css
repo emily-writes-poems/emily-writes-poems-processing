@@ -79,6 +79,10 @@ body {
     margin: 0.25em 0.5em 0.25em 0;
 }
 
+.small-button {
+    padding: 0.5em;
+}
+
 .material-icons {
     vertical-align: middle;
     margin-top: -0.1em;
@@ -88,7 +92,6 @@ body {
     color: #5B58BB;
     text-align: center;
 }
-
 
 h4 {
     color: #8A88D2;
@@ -124,9 +127,14 @@ th {
 
 .small-option {
     text-decoration: underline;
-    font-size: 0.8em;
+    font-size: 0.85em;
     cursor: pointer;
     color: #817E92;
+    display: block;
+    white-space: nowrap;
+}
+
+.same-line {
     display: inline-block;
 }
 
@@ -152,6 +160,15 @@ th {
     color: #F8F8FF;
     background-color: #8A88D2;
     border: solid 0.05em #5B58BB;
+}
+
+.link-poems-section h6 {
+    color: #5B58BB;
+    font-weight: bold;
+    margin-bottom: 0.25em;
+}
+.link-poems-section div {
+    margin-bottom: 1em;
 }
 
 #toggle-theme {
