@@ -159,7 +159,7 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                     <h6 className="modal-title">LINK POEM > {poem.poem_title}</h6>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
-                                <div className="modal-body link-poems-section">
+                                <div className="modal-body modal-section">
                                     { poem.linked_poems_ids &&
                                         <div id="linked-poems-list">
                                             <h6>Already linked to</h6>
@@ -180,7 +180,6 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                         </select>
                                     </div>
                                     <button id={"link-poems-submit-" + poem.poem_id + index} className="btn btn-outline-primary small-button" onClick={()=> linkPoems(poem.poem_id, poem.poem_title)}>Link poems</button>
-
                                 </div>
                             </div>
                         </div>

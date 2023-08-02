@@ -162,12 +162,12 @@ th {
     border: solid 0.05em #5B58BB;
 }
 
-.link-poems-section h6 {
+.modal-section h6 {
     color: #5B58BB;
     font-weight: bold;
     margin-bottom: 0.25em;
 }
-.link-poems-section div {
+.modal-section div {
     margin-bottom: 1em;
 }
 

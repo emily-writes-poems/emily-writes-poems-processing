@@ -75,7 +75,7 @@ const CollectionTab = () => {
                         <tr>
                             <th className="col-2">Collection Name</th>
                             <th>Collection Summary</th>
-                            <th className="col-4">Poems</th>
+                            <th className="col-2">Poems</th>
                             <th className="col-2">Wordcloud</th>
                         </tr>
                     </thead>
@@ -85,9 +85,7 @@ const CollectionTab = () => {
                                 <td className="align-middle">{coll.collection_name}</td>
                                 <td className="align-middle">{coll.collection_summary}</td>
                                 <td className="align-middle">
-                                    {coll.poem_titles &&
-                                        coll.poem_titles.map((poem, index) => <p key={index} className="list-spacing">- {poem}</p>)
-                                    }
+                                    <div className="small-option" data-bs-toggle="modal" data-bs-target={"#coll-poems-" + coll.collection_id}>(edit poems)</div>
                                 </td>
                                 <td className="align-middle">
                                     <div className="small-option" onClick={() => processWordcloud(coll.collection_id)}>(process)</div>
@@ -102,6 +100,29 @@ const CollectionTab = () => {
                         )}
                     </tbody>
                 </table>
+
+                {collections.map((coll, index) =>
+                    <div key={index} className="modal fade" id={"coll-poems-" + coll.collection_id} tab-index="-1" data-bs-backdrop="static">
+                        <div className="modal-dialog modal-dialog-centered">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h6 className="modal-title">COLLECTION POEMS > {coll.collection_name}</h6>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div className="modal-body modal-section">
+                                    { coll.poem_ids &&
+                                        <div id="coll-poems-list">
+                                            <h6>Poems</h6>
+                                            {coll.poem_titles.map((coll_poem_title, index) =>
+                                                <p className="list-spacing">{coll_poem_title}</p>
+                                            )}
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
         </>
