@@ -162,14 +162,14 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                 <div className="modal-body modal-section">
                                     { poem.linked_poems_ids &&
                                         <div id="linked-poems-list">
-                                            <h6>Already linked to</h6>
+                                            <h6>Currently linked poems</h6>
                                             {poem.linked_poems_titles.map((linked_poem_title, index) =>
                                                 <p key={index} className="list-spacing">{linked_poem_title} <span className="small-option same-line" onClick={() => deleteLinkedPoem(poem.poem_id, poem.poem_title, poem.linked_poems_ids[index], linked_poem_title)}>(delete link)</span></p>
                                             )}
                                         </div>
                                     }
-                                    <div className="link-poems-dropdown">
-                                        <h6>Link to</h6>
+                                    <div className="poem-dropdown">
+                                        <h6>Select a poem</h6>
                                         <select className="form-select" id={"link-to-poem-dropdown-" + poem.poem_id} defaultValue={""}>
                                             <option value="" disabled>Select a poem</option>
                                             {poems.map((poem, index) =>
@@ -178,8 +178,8 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                                 </option>
                                             )}
                                         </select>
+                                        <button id={"link-poems-submit-" + poem.poem_id + index} className="btn btn-outline-primary modal-button" onClick={()=> linkPoems(poem.poem_id, poem.poem_title)}>Link poems</button>
                                     </div>
-                                    <button id={"link-poems-submit-" + poem.poem_id + index} className="btn btn-outline-primary small-button" onClick={()=> linkPoems(poem.poem_id, poem.poem_title)}>Link poems</button>
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-const CollectionTab = () => {
+const CollectionTab = ({poems}) => {
     const [ collections, setCollections ] = React.useState([]);
     const [ refreshCollections, setRefreshCollections ] = React.useState(false);
 
@@ -23,6 +23,13 @@ const CollectionTab = () => {
         let ret = window.collections.editCollectionPoems(action, collection_id, poem_id, poem_title);
         window.collections.sendCollectionPoemsNotification(ret);
         setRefreshCollections(!refreshCollections);
+    }
+
+    const addCollectionPoem = (collection_id) => {
+        let poem_dropdown = document.getElementById("add-collection-poem-dropdown-" + collection_id);
+        let poem_id = poem_dropdown.options[poem_dropdown.selectedIndex].value;
+        let poem_title = poem_dropdown.options[poem_dropdown.selectedIndex].text;
+        editCollectionPoems("add", collection_id, poem_id, poem_title);
     }
 
     const processWordcloud = (collection_id) => {
@@ -118,12 +125,24 @@ const CollectionTab = () => {
                                 <div className="modal-body modal-section">
                                     { coll.poem_ids &&
                                         <div id="coll-poems-list">
-                                            <h6>Poems</h6>
+                                            <h6>Poems in collection</h6>
                                             {coll.poem_titles.map((coll_poem_title, index) =>
                                                 <p key={index} className="list-spacing">{coll_poem_title} <span className="small-option same-line" onClick={() => editCollectionPoems("delete", coll.collection_id, coll.poem_ids[index], coll_poem_title)}>(delete)</span></p>
                                             )}
                                         </div>
                                     }
+                                    <div className="poem-dropdown">
+                                        <h6>Select a poem</h6>
+                                        <select className="form-select" id={"add-collection-poem-dropdown-" + coll.collection_id} defaultValue={""}>
+                                            <option value="" disabled>Select a poem</option>
+                                            {poems.map((poem, index) =>
+                                                <option key={index} value={poem.poem_id}>
+                                                    {poem.poem_title}
+                                                </option>
+                                            )}
+                                        </select>
+                                        <button id={"add-collection-poem-submit-" + coll.collection_id + index} className="btn btn-outline-primary modal-button" onClick={()=> addCollectionPoem(coll.collection_id)}>Add poem to collection</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
