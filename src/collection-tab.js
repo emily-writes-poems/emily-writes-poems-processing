@@ -19,6 +19,12 @@ const CollectionTab = () => {
         setRefreshCollections(!refreshCollections);
     }
 
+    const editCollectionPoems = (action, collection_id, poem_id, poem_title) => {
+        let ret = window.collections.editCollectionPoems(action, collection_id, poem_id, poem_title);
+        window.collections.sendCollectionPoemsNotification(ret);
+        setRefreshCollections(!refreshCollections);
+    }
+
     const processWordcloud = (collection_id) => {
         event.preventDefault();
         console.log('clicked to process wordcloud!');
@@ -114,7 +120,7 @@ const CollectionTab = () => {
                                         <div id="coll-poems-list">
                                             <h6>Poems</h6>
                                             {coll.poem_titles.map((coll_poem_title, index) =>
-                                                <p className="list-spacing">{coll_poem_title}</p>
+                                                <p key={index} className="list-spacing">{coll_poem_title} <span className="small-option same-line" onClick={() => editCollectionPoems("delete", coll.collection_id, coll.poem_ids[index], coll_poem_title)}>(delete)</span></p>
                                             )}
                                         </div>
                                     }

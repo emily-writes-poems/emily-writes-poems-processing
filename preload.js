@@ -50,9 +50,6 @@ contextBridge.exposeInMainWorld('electron', {
             new Notification('Error editing current feature', { body : "For poem: " + poem_id } );
         }
     },
-    sendPoemsLinkedNotification: (ret) => {
-        new Notification('Link poems', { body : ret } );
-    }
 });
 
 
@@ -82,12 +79,21 @@ contextBridge.exposeInMainWorld('poem_details', {
     },
     deleteLinkedPoem: (poem1_id, poem1_title, poem2_id, poem2_title) => {
         return ipcRenderer.sendSync('delete-poem-link', [poem1_id, poem1_title, poem2_id, poem2_title]);
+    },
+    sendPoemsLinkedNotification: (ret) => {
+        new Notification('Link poems', { body : ret } );
     }
 });
 
 contextBridge.exposeInMainWorld('collections', {
     createNewCollection: (collection_id, collection_name, collection_summary) => {
         return ipcRenderer.sendSync('create-new-collection', [collection_id, collection_name, collection_summary]);
+    },
+    editCollectionPoems: (action, collection_id, poem_id, poem_title) => {
+        return ipcRenderer.sendSync('edit-collection-poems', [action, collection_id, poem_id, poem_title]);
+    },
+    sendCollectionPoemsNotification: (ret) => {
+        new Notification('Collection poems', { body : ret } );
     },
     processWordcloud: (collection_id) => {
         return ipcRenderer.sendSync('process-wordcloud', collection_id);

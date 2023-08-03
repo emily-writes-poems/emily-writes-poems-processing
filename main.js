@@ -157,6 +157,35 @@ ipcMain.on('create-new-collection', (event, args) => {
 });
 
 
+// Add or delete a poem to/from a collection
+ipcMain.on('edit-collection-poems', (event, args) => {
+    let [action, collection_id, poem_id, poem_title] = args;
+
+    if (action=='add') {
+        mongo_database.collection(config.mongo_poemcolls_coll).count( { "collection_id" : collection_id, "poem_ids" : poem_id }, (err, result) => {
+        if(err) throw err;
+        if(result > 0) { event.returnValue = "Poem is already in collection!"; return; }
+        else {
+            mongo_database.collection(config.mongo_poemcolls_coll).updateOne( { "collection_id" : collection_id }, { $push: { "poem_ids" : poem_id, "poem_titles" : poem_title } });
+
+            event.returnValue = ("Added poem: " + poem_id + " to collection: " + collection_id);
+        }
+    })
+    } else if (action=='delete') {
+        mongo_database.collection(config.mongo_poemcolls_coll).count( { "collection_id" : collection_id, "poem_ids" : poem_id }, (err, result) => {
+            if(err) throw err;
+            if(result == 0) { event.returnValue = "Poem is not in collection!"; return; }
+            else {
+                mongo_database.collection(config.mongo_poemcolls_coll).updateOne( { "collection_id" : collection_id }, { $pull: { "poem_ids" : poem_id, "poem_titles" : poem_title } });
+
+                event.returnValue = ("Removed poem: " + poem_id + " from collection: " + collection_id);
+            }
+        });
+    } else {
+       event.returnValue = "Invalid action for editing poem collection!";
+    }
+});
+
 // Create new feature from form fields
 ipcMain.on('create-new-feature', (event, args) => {
     let [poem_id, poem_title, feature_text, set_current_feature] = args;

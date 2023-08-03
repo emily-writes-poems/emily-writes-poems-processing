@@ -59,7 +59,7 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
             console.log(poem1_id, poem2_id);
             let poem2_title = poem_dropdown.options[poem_dropdown.selectedIndex].text;
             let ret = window.poem_details.linkPoems(poem1_id, poem1_title, poem2_id, poem2_title);
-            window.electron.sendPoemsLinkedNotification(ret);
+            window.poem_details.sendPoemsLinkedNotification(ret);
             refreshPoemsList();
         } else {
             console.log("select a poem to link");
@@ -69,7 +69,7 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
     const deleteLinkedPoem = (poem1_id, poem1_title, poem2_id, poem2_title) => {
         console.log(poem1_id, poem2_id);
         let ret = window.poem_details.deleteLinkedPoem(poem1_id, poem1_title, poem2_id, poem2_title);
-        window.electron.sendPoemsLinkedNotification(ret);
+        window.poem_details.sendPoemsLinkedNotification(ret);
         refreshPoemsList();
     }
 
@@ -164,7 +164,7 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
                                         <div id="linked-poems-list">
                                             <h6>Already linked to</h6>
                                             {poem.linked_poems_titles.map((linked_poem_title, index) =>
-                                                <p className="list-spacing">{linked_poem_title} <span className="small-option same-line" onClick={() => deleteLinkedPoem(poem.poem_id, poem.poem_title, poem.linked_poems_ids[index], linked_poem_title)}>(delete link)</span></p>
+                                                <p key={index} className="list-spacing">{linked_poem_title} <span className="small-option same-line" onClick={() => deleteLinkedPoem(poem.poem_id, poem.poem_title, poem.linked_poems_ids[index], linked_poem_title)}>(delete link)</span></p>
                                             )}
                                         </div>
                                     }
