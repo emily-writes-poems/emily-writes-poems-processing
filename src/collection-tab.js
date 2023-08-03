@@ -1,4 +1,4 @@
-const CollectionTab = () => {
+const CollectionTab = ({poems}) => {
     const [ collections, setCollections ] = React.useState([]);
     const [ refreshCollections, setRefreshCollections ] = React.useState(false);
 
@@ -17,6 +17,19 @@ const CollectionTab = () => {
         let ret = window.collections.createNewCollection(collection_id, collection_name, collection_summary);
         window.electron.sendCreateNotification(ret, "collection");
         setRefreshCollections(!refreshCollections);
+    }
+
+    const editCollectionPoems = (action, collection_id, poem_id, poem_title) => {
+        let ret = window.collections.editCollectionPoems(action, collection_id, poem_id, poem_title);
+        window.collections.sendCollectionPoemsNotification(ret);
+        setRefreshCollections(!refreshCollections);
+    }
+
+    const addCollectionPoem = (collection_id) => {
+        let poem_dropdown = document.getElementById("add-collection-poem-dropdown-" + collection_id);
+        let poem_id = poem_dropdown.options[poem_dropdown.selectedIndex].value;
+        let poem_title = poem_dropdown.options[poem_dropdown.selectedIndex].text;
+        editCollectionPoems("add", collection_id, poem_id, poem_title);
     }
 
     const processWordcloud = (collection_id) => {
@@ -75,7 +88,7 @@ const CollectionTab = () => {
                         <tr>
                             <th className="col-2">Collection Name</th>
                             <th>Collection Summary</th>
-                            <th className="col-4">Poems</th>
+                            <th className="col-2">Poems</th>
                             <th className="col-2">Wordcloud</th>
                         </tr>
                     </thead>
@@ -85,9 +98,7 @@ const CollectionTab = () => {
                                 <td className="align-middle">{coll.collection_name}</td>
                                 <td className="align-middle">{coll.collection_summary}</td>
                                 <td className="align-middle">
-                                    {coll.poem_titles &&
-                                        coll.poem_titles.map((poem, index) => <p key={index} className="list-spacing">- {poem}</p>)
-                                    }
+                                    <div className="small-option" data-bs-toggle="modal" data-bs-target={"#coll-poems-" + coll.collection_id}>(edit poems)</div>
                                 </td>
                                 <td className="align-middle">
                                     <div className="small-option" onClick={() => processWordcloud(coll.collection_id)}>(process)</div>
@@ -102,6 +113,41 @@ const CollectionTab = () => {
                         )}
                     </tbody>
                 </table>
+
+                {collections.map((coll, index) =>
+                    <div key={index} className="modal fade" id={"coll-poems-" + coll.collection_id} tab-index="-1" data-bs-backdrop="static">
+                        <div className="modal-dialog modal-dialog-centered">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h6 className="modal-title">COLLECTION POEMS > {coll.collection_name}</h6>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div className="modal-body modal-section">
+                                    { coll.poem_ids &&
+                                        <div id="coll-poems-list">
+                                            <h6>Poems in collection</h6>
+                                            {coll.poem_titles.map((coll_poem_title, index) =>
+                                                <p key={index} className="list-spacing">{coll_poem_title} <span className="small-option same-line" onClick={() => editCollectionPoems("delete", coll.collection_id, coll.poem_ids[index], coll_poem_title)}>(delete)</span></p>
+                                            )}
+                                        </div>
+                                    }
+                                    <div className="poem-dropdown">
+                                        <h6>Select a poem</h6>
+                                        <select className="form-select" id={"add-collection-poem-dropdown-" + coll.collection_id} defaultValue={""}>
+                                            <option value="" disabled>Select a poem</option>
+                                            {poems.map((poem, index) =>
+                                                <option key={index} value={poem.poem_id}>
+                                                    {poem.poem_title}
+                                                </option>
+                                            )}
+                                        </select>
+                                        <button id={"add-collection-poem-submit-" + coll.collection_id + index} className="btn btn-outline-primary modal-button" onClick={()=> addCollectionPoem(coll.collection_id)}>Add poem to collection</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
         </>

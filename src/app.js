@@ -35,7 +35,7 @@ const App = () => {
             </ul>
             <div className="tab-content">
                 <div className="tab-pane fade show active" id="poem-details-tab"><PoemDetailsTab poems={poemsList} refreshPoemsList={() => setRefreshPoemsList(!refreshPoemsList)}/></div>
-                <div className="tab-pane fade" id="collection-tab"><CollectionTab /></div>
+                <div className="tab-pane fade" id="collection-tab"><CollectionTab poems={poemsList}/></div>
                 <div className="tab-pane fade" id="feature-tab"><FeatureTab poems={poemsList}/></div>
             </div>
         </div>
