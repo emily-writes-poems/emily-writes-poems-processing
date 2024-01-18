@@ -22,7 +22,7 @@ const PoemDetailsTab = ({poems, refreshPoemsList}) => {
             console.log('missing something to create a poem file')
         }
 
-        if (poem_id && poem_title && poem_behind_title && poem_behind_poem && poem_lines) {
+        if (poem_id && poem_title && (poem_behind_title || poem_behind_poem) && poem_lines) {
             console.log('create details file!');
             let ret = window.poem_details.createNewDetails(poem_id, poem_title, poem_behind_title, poem_behind_poem, poem_lines);
             window.electron.sendCreateNotification(ret, "details file");

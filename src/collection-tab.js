@@ -36,7 +36,7 @@ const CollectionTab = ({poems}) => {
         event.preventDefault();
         console.log('clicked to process wordcloud!');
         let ret = window.collections.processWordcloud(collection_id);
-        window.electron.sendProcessNotification(ret, "collection");
+        window.electron.sendProcessNotification(ret, "wordcloud for collection: " + collection_id);
         setRefreshCollections(!refreshCollections);
     }
 
