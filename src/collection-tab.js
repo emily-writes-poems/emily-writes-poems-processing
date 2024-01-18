@@ -19,6 +19,14 @@ const CollectionTab = ({poems}) => {
         setRefreshCollections(!refreshCollections);
     }
 
+    const deleteCollection = (collection_id, collection_name) => {
+        event.preventDefault();
+        console.log('clicked to delete collection!');
+        let ret = window.collections.deleteCollection(collection_id, collection_name);
+        window.electron.sendDeleteNotification(ret, "collection");
+        setRefreshCollections(!refreshCollections);
+    }
+
     const editCollectionPoems = (action, collection_id, poem_id, poem_title) => {
         let ret = window.collections.editCollectionPoems(action, collection_id, poem_id, poem_title);
         window.collections.sendCollectionPoemsNotification(ret);
@@ -95,7 +103,11 @@ const CollectionTab = ({poems}) => {
                     <tbody>
                         {collections.map((coll, index) =>
                             <tr key={index}>
-                                <td className="align-middle">{coll.collection_name}</td>
+                                <td className="align-middle">
+                                    {coll.collection_name}
+                                    <br/>
+                                    <span className="small-option" onClick={() => deleteCollection(coll.collection_id, coll.collection_name)}>(delete)</span>
+                                </td>
                                 <td className="align-middle">{coll.collection_summary}</td>
                                 <td className="align-middle">
                                     <div className="small-option" data-bs-toggle="modal" data-bs-target={"#coll-poems-" + coll.collection_id}>(edit poems)</div>

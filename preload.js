@@ -89,6 +89,9 @@ contextBridge.exposeInMainWorld('collections', {
     createNewCollection: (collection_id, collection_name, collection_summary) => {
         return ipcRenderer.sendSync('create-new-collection', [collection_id, collection_name, collection_summary]);
     },
+    deleteCollection: (collection_id, collection_name) => {
+        return ipcRenderer.sendSync('delete-collection', [collection_id, collection_name]);
+    },
     editCollectionPoems: (action, collection_id, poem_id, poem_title) => {
         return ipcRenderer.sendSync('edit-collection-poems', [action, collection_id, poem_id, poem_title]);
     },

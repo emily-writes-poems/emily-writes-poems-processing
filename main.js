@@ -157,6 +157,29 @@ ipcMain.on('create-new-collection', (event, args) => {
 });
 
 
+// Confirm deleting a poem collection
+ipcMain.on('delete-collection', (event, args) => {
+    let options = {
+        buttons: ["Yes" , "No"],
+        message: 'Are you sure you want to delete this poem collection?',
+        detail: args[1],
+        type: 'question'
+    }
+
+    dialog.showMessageBox(options).then((response) => {
+        if (response.response == 0) {  // confirmed to delete
+            mongo_database.collection(config.mongo_poemcolls_coll).deleteOne( { "collection_id" : args[0], "collection_name" : args[1] }, (err, result) => {
+                if(err) throw err;
+                console.log("Successfully deleted poem collection.")
+                event.returnValue = 0;
+            })
+        } else {
+            event.returnValue = 1;
+        }
+    })
+})
+
+
 // Add or delete a poem to/from a collection
 ipcMain.on('edit-collection-poems', (event, args) => {
     let [action, collection_id, poem_id, poem_title] = args;
